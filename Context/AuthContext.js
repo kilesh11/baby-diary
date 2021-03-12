@@ -47,7 +47,7 @@ export const AuthProvider = ({ children }) => {
                 return Promise.reject(error);
             }
         }
-        return Promise.reject(new Error('no email or password'));
+        // return Promise.reject(new Error('no email or password'));
     }, []);
 
     return (

@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
 import firebase from 'firebase/app';
-import { auth } from '../Util/firebase';
+import { auth, db } from '../Util/firebase';
 import wrapper from '../Util/common';
 
 const AuthContext = createContext({
@@ -32,11 +32,13 @@ export const AuthProvider = ({ children }) => {
     }, []);
 
     const register = useCallback(async (email, password) => {
-        const { error } = await wrapper(auth.createUserWithEmailAndPassword(email, password));
-
+        const { error, data } = await wrapper(auth.createUserWithEmailAndPassword(email, password));
         if (error) {
             return Promise.reject(error);
         }
+        db.collection('Users')
+            .doc(data.user.uid)
+            .set({ babies: [], email: data.user.email, name: data.user.displayName ?? '' });
         return true;
     }, []);
 
@@ -47,6 +49,7 @@ export const AuthProvider = ({ children }) => {
                 return Promise.reject(error);
             }
         }
+        return true;
         // return Promise.reject(new Error('no email or password'));
     }, []);
 

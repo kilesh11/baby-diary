@@ -29,7 +29,7 @@ const AppScreen = () => {
                     component={HomeScreen}
                     options={{
                         headerStyle: {
-                            backgroundColor: '#f2f2f2',
+                            backgroundColor: '#788eec',
                             elevation: 0,
                             shadowOpacity: 0,
                         },
@@ -42,7 +42,7 @@ const AppScreen = () => {
                         component={LoginScreen}
                         options={{
                             headerStyle: {
-                                backgroundColor: '#f2f2f2',
+                                backgroundColor: '#788eec',
                                 elevation: 0,
                                 shadowOpacity: 0,
                             },
@@ -53,7 +53,7 @@ const AppScreen = () => {
                         component={RegistrationScreen}
                         options={{
                             headerStyle: {
-                                backgroundColor: '#f2f2f2',
+                                backgroundColor: '#788eec',
                                 elevation: 0,
                                 shadowOpacity: 0,
                             },

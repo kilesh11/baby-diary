@@ -2,7 +2,14 @@
 /* eslint-disable react/no-unescaped-entities */
 /* eslint-disable react-native/no-raw-text */
 import React, { useState } from 'react';
-import { Text, View, TextInput, StyleSheet, TouchableOpacity } from 'react-native';
+import {
+    Text,
+    View,
+    TextInput,
+    StyleSheet,
+    TouchableOpacity,
+    KeyboardAvoidingView,
+} from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 // import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scrollview';
 import { useAuth } from '../Context/AuthContext';
@@ -32,36 +39,36 @@ const LoginScreen = () => {
     return (
         <DismissKeyboard>
             <View style={styles.container}>
-                {/* <KeyboardAwareScrollView style={styles.scrollView} keyboardShouldPersistTaps="always"> */}
-                <TextInput
-                    style={styles.input}
-                    placeholder="Email"
-                    placeholderTextColor="#aaaaaa"
-                    onChangeText={(text) => setEmail(text)}
-                    value={email}
-                    underlineColorAndroid="transparent"
-                    autoCapitalize="none"
-                />
-                <TextInput
-                    style={styles.input}
-                    placeholderTextColor="#aaaaaa"
-                    secureTextEntry
-                    placeholder="Password"
-                    onChangeText={(text) => setPassword(text)}
-                    value={password}
-                    underlineColorAndroid="transparent"
-                    autoCapitalize="none"
-                />
-                <TouchableOpacity style={styles.button} onPress={() => onLogin()}>
-                    <Text style={styles.buttonTitle}>Log In</Text>
-                </TouchableOpacity>
-                <Text style={styles.footerText}>
-                    Don't have an account?{' '}
-                    <Text onPress={onFooterLinkPress} style={styles.footerLink}>
-                        Register
+                <KeyboardAvoidingView style={styles.avoidingView} behavior="padding">
+                    <TextInput
+                        style={styles.input}
+                        placeholder="Email"
+                        placeholderTextColor="#aaaaaa"
+                        onChangeText={(text) => setEmail(text)}
+                        value={email}
+                        underlineColorAndroid="transparent"
+                        autoCapitalize="none"
+                    />
+                    <TextInput
+                        style={styles.input}
+                        placeholderTextColor="#aaaaaa"
+                        secureTextEntry
+                        placeholder="Password"
+                        onChangeText={(text) => setPassword(text)}
+                        value={password}
+                        underlineColorAndroid="transparent"
+                        autoCapitalize="none"
+                    />
+                    <TouchableOpacity style={styles.button} onPress={() => onLogin()}>
+                        <Text style={styles.buttonTitle}>Log In</Text>
+                    </TouchableOpacity>
+                    <Text style={styles.footerText}>
+                        Don't have an account?{' '}
+                        <Text onPress={onFooterLinkPress} style={styles.footerLink}>
+                            Register
+                        </Text>
                     </Text>
-                </Text>
-                {/* </KeyboardAwareScrollView> */}
+                </KeyboardAvoidingView>
             </View>
         </DismissKeyboard>
     );
@@ -70,12 +77,11 @@ const LoginScreen = () => {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        justifyContent: 'center',
         // alignItems: 'center',
     },
-    scrollView: {
+    avoidingView: {
         flex: 1,
-        width: '100%',
+        justifyContent: 'center',
     },
     input: {
         height: 48,

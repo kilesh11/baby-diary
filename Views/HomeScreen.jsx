@@ -1,48 +1,52 @@
 import React from 'react';
-import { Text, View, TouchableOpacity, StyleSheet } from 'react-native';
-import { useAuth } from '../Context/AuthContext';
-import { auth } from '../Util/firebase';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { FontAwesome5 } from '@expo/vector-icons';
+import BabyScreen from './BabyScreen';
+import DiaryScreen from './DiaryScreen';
+import ProfileScreen from './ProfileScreen';
+
+const Tab = createBottomTabNavigator();
 
 const HomeScreen = () => {
-    const { user } = useAuth();
-
     return (
-        <View style={styles.container}>
-            <Text style={styles.text}>Welcome</Text>
-            <Text style={styles.text}>{user?.email ?? ''}</Text>
-            <TouchableOpacity style={styles.button} onPress={() => auth.signOut()}>
-                <Text style={styles.buttonTitle}>Logout</Text>
-            </TouchableOpacity>
-        </View>
+        <Tab.Navigator
+            screenOptions={({ route }) => ({
+                tabBarIcon: ({ focused, color, size }) => {
+                    let iconName;
+
+                    switch (route.name) {
+                        case 'Baby':
+                            iconName = 'baby';
+                            break;
+                        case 'Diary':
+                            iconName = 'book';
+                            break;
+                        case 'Profile':
+                            iconName = 'user-alt';
+                            break;
+                        default:
+                            iconName = 'book';
+                    }
+
+                    return (
+                        <FontAwesome5
+                            name={iconName}
+                            size={size}
+                            color={focused ? '#788eec' : color}
+                        />
+                    );
+                },
+            })}
+            tabBarOptions={{
+                activeTintColor: '#788eec',
+                inactiveTintColor: 'gray',
+            }}
+        >
+            <Tab.Screen name="Baby" component={BabyScreen} />
+            <Tab.Screen name="Diary" component={DiaryScreen} />
+            <Tab.Screen name="Profile" component={ProfileScreen} />
+        </Tab.Navigator>
     );
 };
-
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        justifyContent: 'center',
-        // alignItems: 'center',
-    },
-    text: {
-        alignSelf: 'center',
-        fontSize: 30,
-        marginBottom: 30,
-    },
-    button: {
-        backgroundColor: '#788eec',
-        marginLeft: 30,
-        marginRight: 30,
-        marginTop: 20,
-        height: 48,
-        borderRadius: 5,
-        alignItems: 'center',
-        justifyContent: 'center',
-    },
-    buttonTitle: {
-        color: 'white',
-        fontSize: 16,
-        fontWeight: 'bold',
-    },
-});
 
 export default HomeScreen;

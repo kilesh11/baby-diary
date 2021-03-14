@@ -1,5 +1,4 @@
 import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
-import firebase from 'firebase/app';
 import { auth, db } from '../Util/firebase';
 import wrapper from '../Util/common';
 
@@ -16,29 +15,45 @@ export const useAuth = () => {
 
 export const AuthProvider = ({ children }) => {
     const [isLoading, setIsLoading] = useState(true);
+    const [firebaseUser, setFirebaseUser] = useState(null);
     const [user, setUser] = useState(null);
 
     useEffect(() => {
-        const unsubscribe = firebase.auth().onAuthStateChanged(async (newUser) => {
+        const unsubscribe = auth.onAuthStateChanged(async (newUser) => {
             if (newUser) {
-                setUser(newUser);
+                const firestoreUser = await db.collection('Users').doc(newUser.uid).get();
+                if (!firestoreUser.exists) {
+                    await db
+                        .collection('Users')
+                        .doc(newUser.uid)
+                        .set({ babies: [], email: newUser.email, name: newUser.displayName ?? '' });
+                }
+                setFirebaseUser(newUser);
+            } else {
+                setFirebaseUser(null);
+            }
+        });
+        return () => unsubscribe();
+    }, []);
+
+    useEffect(() => {
+        (async () => {
+            if (firebaseUser) {
+                const firestoreUser = await db.collection('Users').doc(firebaseUser.uid).get();
+                setUser(firestoreUser.data());
             } else {
                 setUser(null);
             }
             setIsLoading(false);
-        });
-        return () => unsubscribe();
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
+        })();
+    }, [firebaseUser]);
 
     const register = useCallback(async (email, password) => {
-        const { error, data } = await wrapper(auth.createUserWithEmailAndPassword(email, password));
+        const { error } = await wrapper(auth.createUserWithEmailAndPassword(email, password));
         if (error) {
             return Promise.reject(error);
         }
-        db.collection('Users')
-            .doc(data.user.uid)
-            .set({ babies: [], email: data.user.email, name: data.user.displayName ?? '' });
+
         return true;
     }, []);
 
@@ -50,7 +65,6 @@ export const AuthProvider = ({ children }) => {
             }
         }
         return true;
-        // return Promise.reject(new Error('no email or password'));
     }, []);
 
     return (

@@ -1,10 +1,13 @@
 import React from 'react';
 import { Text, View, TouchableOpacity, StyleSheet } from 'react-native';
 import { useAuth } from '../Context/AuthContext';
+import { useBaby } from '../Context/BabyContext';
 import { auth } from '../Util/firebase';
 
 const DiaryScreen = () => {
     const { user } = useAuth();
+    const { babies } = useBaby();
+    console.log('kyle_debug ~ file: DiaryScreen.jsx ~ line 10 ~ DiaryScreen ~ babies', babies);
 
     return (
         <View style={styles.container}>

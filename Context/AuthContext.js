@@ -40,7 +40,7 @@ export const AuthProvider = ({ children }) => {
         (async () => {
             if (firebaseUser) {
                 const firestoreUser = await db.collection('Users').doc(firebaseUser.uid).get();
-                setUser(firestoreUser.data());
+                setUser({ ...firestoreUser.data(), uid: firebaseUser.uid });
             } else {
                 setUser(null);
             }

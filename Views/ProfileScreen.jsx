@@ -1,5 +1,5 @@
 import React from 'react';
-import { Text, View, TouchableOpacity, StyleSheet, StatusBar } from 'react-native';
+import { Text, View, TouchableOpacity, StyleSheet } from 'react-native';
 import { useAuth } from '../Context/AuthContext';
 import { auth } from '../Util/firebase';
 
@@ -7,16 +7,13 @@ const ProfileScreen = () => {
     const { user } = useAuth();
 
     return (
-        <>
-            <StatusBar barStyle="dark-content" />
-            <View style={styles.container}>
-                <Text style={styles.text}>Welcome Profile Screen</Text>
-                <Text style={styles.text}>{user?.email ?? ''}</Text>
-                <TouchableOpacity style={styles.button} onPress={() => auth.signOut()}>
-                    <Text style={styles.buttonTitle}>Logout</Text>
-                </TouchableOpacity>
-            </View>
-        </>
+        <View style={styles.container}>
+            <Text style={styles.text}>Welcome Profile Screen</Text>
+            <Text style={styles.text}>{user?.email ?? ''}</Text>
+            <TouchableOpacity style={styles.button} onPress={() => auth.signOut()}>
+                <Text style={styles.buttonTitle}>Logout</Text>
+            </TouchableOpacity>
+        </View>
     );
 };
 

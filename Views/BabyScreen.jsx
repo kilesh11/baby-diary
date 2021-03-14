@@ -1,22 +1,24 @@
+/* eslint-disable global-require */
 import React from 'react';
-import { Text, View, TouchableOpacity, StyleSheet, StatusBar } from 'react-native';
+import { Text, View, TouchableOpacity, StyleSheet, Image } from 'react-native';
 import { useAuth } from '../Context/AuthContext';
+import { useBaby } from '../Context/BabyContext';
 import { auth } from '../Util/firebase';
 
 const BabyScreen = () => {
     const { user } = useAuth();
+    const { babies } = useBaby();
+    console.log('kyle_debug ~ file: BabyScreen.jsx ~ line 10 ~ BabyScreen ~ babies', babies);
 
     return (
-        <>
-            <StatusBar barStyle="dark-content" />
-            <View style={styles.container}>
-                <Text style={styles.text}>Welcome Baby Screen</Text>
-                <Text style={styles.text}>{user?.email ?? ''}</Text>
-                <TouchableOpacity style={styles.button} onPress={() => auth.signOut()}>
-                    <Text style={styles.buttonTitle}>Logout</Text>
-                </TouchableOpacity>
-            </View>
-        </>
+        <View style={styles.container}>
+            <Text style={styles.text}>Welcome Baby Screen</Text>
+            <Text style={styles.text}>{user?.email ?? ''}</Text>
+            <Image style={styles.image} source={require('../assets/default-avatar.jpg')} />
+            <TouchableOpacity style={styles.button} onPress={() => auth.signOut()}>
+                <Text style={styles.buttonTitle}>Logout</Text>
+            </TouchableOpacity>
+        </View>
     );
 };
 
@@ -25,6 +27,11 @@ const styles = StyleSheet.create({
         flex: 1,
         justifyContent: 'center',
         // alignItems: 'center',
+    },
+    image: {
+        alignSelf: 'center',
+        height: 100,
+        width: 100,
     },
     text: {
         alignSelf: 'center',

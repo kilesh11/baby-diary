@@ -10,14 +10,14 @@ import LoadingScreen from './LoadingScreen';
 import HomeScreen from './HomeScreen';
 import BabyScreen from './BabyScreen';
 import { useBaby } from '../Context/BabyContext';
+import BabyDetailScreen from './BabyDetailScreen';
 
 const Stack = createStackNavigator();
 
 const AppScreen = () => {
     const { user, isLoading } = useAuth();
-    const { selectedBaby } = useBaby();
-    // const isLoading = false;
-    // const user = null;
+    const { selectedBaby, babies } = useBaby();
+
     return (
         <Stack.Navigator>
             {isLoading ? (
@@ -32,10 +32,12 @@ const AppScreen = () => {
                 selectedBaby ? (
                     <>
                         <Stack.Screen
-                            name={selectedBaby?.name ?? 'Home'}
+                            name="Home"
                             component={HomeScreen}
                             options={({ navigation }) => ({
                                 headerTintColor: 'white',
+                                headerTitle:
+                                    babies?.find((baby) => baby.id === selectedBaby)?.name ?? '',
                                 headerStyle: {
                                     backgroundColor: '#788eec',
                                     elevation: 0,
@@ -47,13 +49,13 @@ const AppScreen = () => {
                                         name="baby"
                                         size={20}
                                         color="white"
-                                        onPress={() => navigation.navigate('Baby')}
+                                        onPress={() => navigation.navigate('HomeBaby')}
                                     />
                                 ),
                             })}
                         />
                         <Stack.Screen
-                            name="Which Baby to Record"
+                            name="HomeBaby"
                             component={BabyScreen}
                             options={{
                                 headerTintColor: 'white',
@@ -64,20 +66,52 @@ const AppScreen = () => {
                                 },
                             }}
                         />
+                        <Stack.Screen
+                            name="BabyDetail"
+                            component={BabyDetailScreen}
+                            initialParams={{ firstLogin: false }}
+                            options={({ route }) => ({
+                                headerTitle: route.params?.title ?? 'Baby',
+                                headerTintColor: 'white',
+                                headerStyle: {
+                                    backgroundColor: '#788eec',
+                                    elevation: 0,
+                                    shadowOpacity: 0,
+                                },
+                            })}
+                        />
                     </>
                 ) : (
-                    <Stack.Screen
-                        name="Which Baby to Record"
-                        component={BabyScreen}
-                        options={{
-                            headerTintColor: 'white',
-                            headerStyle: {
-                                backgroundColor: '#788eec',
-                                elevation: 0,
-                                shadowOpacity: 0,
-                            },
-                        }}
-                    />
+                    <>
+                        <Stack.Screen
+                            name="ChooseBaby"
+                            component={BabyScreen}
+                            initialParams={{ firstLogin: true }}
+                            options={{
+                                headerTitle: 'Which Baby to Record',
+                                headerTintColor: 'white',
+                                headerStyle: {
+                                    backgroundColor: '#788eec',
+                                    elevation: 0,
+                                    shadowOpacity: 0,
+                                },
+                            }}
+                        />
+                        <Stack.Screen
+                            name="BabyDetail"
+                            component={BabyDetailScreen}
+                            initialParams={{ firstLogin: true }}
+                            options={({ route }) => ({
+                                headerTitle: route.params?.title ?? 'Baby',
+                                headerTintColor: 'white',
+                                headerStyle: {
+                                    backgroundColor: '#788eec',
+                                    elevation: 0,
+                                    shadowOpacity: 0,
+                                },
+                            })}
+                        />
+                    </>
                 )
             ) : (
                 <>

@@ -1,3 +1,4 @@
+import firebase from 'firebase';
 import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
 import { db } from '../Util/firebase';
 import { useAuth } from './AuthContext';
@@ -25,36 +26,61 @@ export const BabyProvider = ({ children }) => {
                 .collection('Babies')
                 .where('parents', 'array-contains', user.uid)
                 .onSnapshot((querySnapshot) => {
-                    const queryBabies = querySnapshot.docs.map((doc) => doc.data());
-                    console.log(
-                        'kyle_debug ~ file: BabyContext.js ~ line 28 ~ .onSnapshot ~ queryBabies',
-                        queryBabies,
-                    );
+                    const queryBabies = querySnapshot.docs.map((doc) => ({
+                        ...doc.data(),
+                        id: doc.id,
+                    }));
+                    queryBabies.sort((a, b) => b.updatedAt.toDate() - a.updatedAt.toDate());
                     setBabies(queryBabies);
                 });
             return unsubscribe;
         }
+        setSelectedBaby(null);
     }, [user]);
 
-    const addBaby = useCallback(async (baby) => {
-        console.log('kyle_debug ~ file: BabyContext.js ~ line 24 ~ addBaby ~ baby', baby);
-        console.log('addBaby');
-
-        return true;
-    }, []);
+    const addBaby = useCallback(
+        async (baby) => {
+            try {
+                await db
+                    .collection('Babies')
+                    .doc()
+                    .set({
+                        birthDate: firebase.firestore.Timestamp.fromDate(baby.birthDate),
+                        updatedAt: firebase.firestore.Timestamp.fromDate(new Date()),
+                        name: baby.name,
+                        parents: [user.uid],
+                    });
+                return true;
+            } catch (err) {
+                return Promise.reject(err);
+            }
+        },
+        [user],
+    );
 
     const removeBaby = useCallback(async (babyId) => {
-        console.log('kyle_debug ~ file: BabyContext.js ~ line 33 ~ removeBaby ~ babyId', babyId);
-        console.log('removeBaby');
-        return true;
+        try {
+            await db.collection('Babies').doc(babyId).delete();
+            return true;
+        } catch (err) {
+            return Promise.reject(err);
+        }
     }, []);
 
     const updateBaby = useCallback(async (babyId, baby) => {
-        console.log('kyle_debug ~ file: BabyContext.js ~ line 43 ~ updateBaby ~ baby', baby);
-        console.log('kyle_debug ~ file: BabyContext.js ~ line 43 ~ updateBaby ~ babyId', babyId);
-        console.log('updateBaby');
-
-        return true;
+        try {
+            await db
+                .collection('Babies')
+                .doc(babyId)
+                .update({
+                    birthDate: firebase.firestore.Timestamp.fromDate(baby.birthDate),
+                    updatedAt: firebase.firestore.Timestamp.fromDate(new Date()),
+                    name: baby.name,
+                });
+            return true;
+        } catch (err) {
+            return Promise.reject(err);
+        }
     }, []);
 
     return (

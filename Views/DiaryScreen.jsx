@@ -6,13 +6,15 @@ import { auth } from '../Util/firebase';
 
 const DiaryScreen = () => {
     const { user } = useAuth();
-    const { babies } = useBaby();
-    console.log('kyle_debug ~ file: DiaryScreen.jsx ~ line 10 ~ DiaryScreen ~ babies', babies);
+    const { babies, selectedBaby } = useBaby();
 
     return (
         <View style={styles.container}>
             <Text style={styles.text}>Welcome Diary Screen</Text>
             <Text style={styles.text}>{user?.email ?? ''}</Text>
+            <Text style={styles.text}>
+                {babies?.find((baby) => baby.id === selectedBaby)?.name ?? ''}
+            </Text>
             <TouchableOpacity style={styles.button} onPress={() => auth.signOut()}>
                 <Text style={styles.buttonTitle}>Logout</Text>
             </TouchableOpacity>

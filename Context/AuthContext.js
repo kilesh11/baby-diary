@@ -21,13 +21,13 @@ export const AuthProvider = ({ children }) => {
     useEffect(() => {
         const unsubscribe = auth.onAuthStateChanged(async (newUser) => {
             if (newUser) {
-                const firestoreUser = await db.collection('Users').doc(newUser.uid).get();
-                if (!firestoreUser.exists) {
-                    await db
-                        .collection('Users')
-                        .doc(newUser.uid)
-                        .set({ babies: [], email: newUser.email, name: newUser.displayName ?? '' });
-                }
+                await db
+                    .collection('Users')
+                    .doc(newUser.uid)
+                    .set(
+                        { babies: [], email: newUser.email, name: newUser.displayName ?? '' },
+                        { merge: true },
+                    );
                 setFirebaseUser(newUser);
             } else {
                 setFirebaseUser(null);

@@ -11,7 +11,7 @@ import {
     KeyboardAvoidingView,
     Keyboard,
 } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useRoute } from '@react-navigation/native';
 // import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scrollview';
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
 import DismissKeyboard from './DismissKeyboard';
@@ -19,7 +19,8 @@ import { useBaby } from '../Context/BabyContext';
 
 const options = { year: 'numeric', month: 'long', day: 'numeric' };
 
-const BabyDetailScreen = ({ route }) => {
+const BabyDetailScreen = () => {
+    const route = useRoute();
     const navigation = useNavigation();
     const { babies, addBaby, updateBaby, removeBaby } = useBaby();
     const [name, setName] = useState(

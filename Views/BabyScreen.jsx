@@ -1,8 +1,7 @@
 /* eslint-disable react-native/no-inline-styles */
 /* eslint-disable global-require */
 import React, { useState } from 'react';
-import { useNavigation } from '@react-navigation/native';
-import ActionButton from 'react-native-action-button';
+import { useNavigation, useRoute } from '@react-navigation/native';
 import { FontAwesome5 } from '@expo/vector-icons';
 // Amend ActionButton.js sourced code ComponentWillReceivesProps to UNSAFE_componentWillReceiveProps
 import {
@@ -15,11 +14,13 @@ import {
     FlatList,
     Dimensions,
 } from 'react-native';
+import ActionButton from '../Util/ActionButton/ActionButton';
 // import { useAuth } from '../Context/AuthContext';
 import { useBaby } from '../Context/BabyContext';
 import { auth } from '../Util/firebase';
 
-const BabyScreen = ({ route }) => {
+const BabyScreen = () => {
+    const route = useRoute();
     const natvigation = useNavigation();
     const { babies, setSelectedBaby } = useBaby();
     const [updateMode, setUpdateMode] = useState(false);
@@ -81,9 +82,11 @@ const BabyScreen = ({ route }) => {
                     >
                         <Text style={styles.buttonTitle}>Manage Babies</Text>
                     </TouchableOpacity>
-                    <TouchableOpacity style={styles.button} onPress={() => auth.signOut()}>
-                        <Text style={styles.buttonTitle}>Logout</Text>
-                    </TouchableOpacity>
+                    {route.params?.firstLogin && (
+                        <TouchableOpacity style={styles.button} onPress={() => auth.signOut()}>
+                            <Text style={styles.buttonTitle}>Logout</Text>
+                        </TouchableOpacity>
+                    )}
                 </>
             ) : (
                 <View style={styles.noBabyFound}>

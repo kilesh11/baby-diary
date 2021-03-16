@@ -4,13 +4,14 @@ import { StyleSheet } from 'react-native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { FontAwesome5 } from '@expo/vector-icons';
 import { useAuth } from '../Context/AuthContext';
+import { useBaby } from '../Context/BabyContext';
 import LoginScreen from './LoginScreen';
 import RegistrationScreen from './RegistrationScreen';
 import LoadingScreen from './LoadingScreen';
 import HomeScreen from './HomeScreen';
 import BabyScreen from './BabyScreen';
-import { useBaby } from '../Context/BabyContext';
 import BabyDetailScreen from './BabyDetailScreen';
+import DiaryDetailScreen from './DiaryDetailScreen';
 
 const Stack = createStackNavigator();
 
@@ -58,6 +59,7 @@ const AppScreen = () => {
                             name="HomeBaby"
                             component={BabyScreen}
                             options={{
+                                headerTitle: 'Baby',
                                 headerTintColor: 'white',
                                 headerStyle: {
                                     backgroundColor: '#788eec',
@@ -72,6 +74,20 @@ const AppScreen = () => {
                             initialParams={{ firstLogin: false }}
                             options={({ route }) => ({
                                 headerTitle: route.params?.title ?? 'Baby',
+                                headerTintColor: 'white',
+                                headerStyle: {
+                                    backgroundColor: '#788eec',
+                                    elevation: 0,
+                                    shadowOpacity: 0,
+                                },
+                            })}
+                        />
+                        <Stack.Screen
+                            name="DiaryDetail"
+                            component={DiaryDetailScreen}
+                            initialParams={{ firstLogin: false }}
+                            options={({ route }) => ({
+                                headerTitle: route.params?.title ?? 'Add Diary',
                                 headerTintColor: 'white',
                                 headerStyle: {
                                     backgroundColor: '#788eec',

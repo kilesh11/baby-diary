@@ -46,7 +46,7 @@ const BabyScreen = () => {
                 <Image
                     onPress={() => natvigation}
                     style={styles.image}
-                    source={require('../assets/default-avatar.jpg')}
+                    source={require('../../assets/default-avatar.jpg')}
                 />
                 {updateMode && (
                     <FontAwesome5

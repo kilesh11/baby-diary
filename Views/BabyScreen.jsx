@@ -3,7 +3,6 @@
 import React, { useState } from 'react';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { FontAwesome5 } from '@expo/vector-icons';
-// Amend ActionButton.js sourced code ComponentWillReceivesProps to UNSAFE_componentWillReceiveProps
 import {
     Text,
     View,
@@ -15,7 +14,6 @@ import {
     Dimensions,
 } from 'react-native';
 import ActionButton from '../Util/ActionButton/ActionButton';
-// import { useAuth } from '../Context/AuthContext';
 import { useBaby } from '../Context/BabyContext';
 import { auth } from '../Util/firebase';
 
@@ -24,8 +22,6 @@ const BabyScreen = () => {
     const natvigation = useNavigation();
     const { babies, setSelectedBaby } = useBaby();
     const [updateMode, setUpdateMode] = useState(false);
-    // const babies = null;
-    // console.log('kyle_debug ~ file: BabyScreen.jsx ~ line 10 ~ BabyScreen ~ babies', babies);
 
     const renderItem = (items) => (
         <TouchableOpacity
@@ -123,8 +119,6 @@ const styles = StyleSheet.create({
     },
     container: {
         flex: 1,
-        // backgroundColor: 'grey',
-        // alignItems: 'center',
     },
     noBabyFound: {
         flex: 1,

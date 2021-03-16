@@ -12,7 +12,6 @@ import {
     Keyboard,
 } from 'react-native';
 import { useNavigation, useRoute } from '@react-navigation/native';
-// import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scrollview';
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
 import DismissKeyboard from './DismissKeyboard';
 import { useBaby } from '../Context/BabyContext';

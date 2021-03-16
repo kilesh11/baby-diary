@@ -11,7 +11,6 @@ import {
     KeyboardAvoidingView,
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-// import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scrollview';
 import { useAuth } from '../Context/AuthContext';
 import DismissKeyboard from './DismissKeyboard';
 
@@ -78,7 +77,6 @@ const LoginScreen = () => {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        // alignItems: 'center',
     },
     avoidingView: {
         flex: 1,

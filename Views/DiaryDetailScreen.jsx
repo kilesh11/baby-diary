@@ -13,10 +13,8 @@ import {
 import { FontAwesome5, Entypo, MaterialCommunityIcons } from '@expo/vector-icons';
 import { RadioButton, Text } from 'react-native-paper';
 import { useNavigation, useRoute } from '@react-navigation/native';
-// import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scrollview';
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
 import DismissKeyboard from './DismissKeyboard';
-// import { useBaby } from '../Context/BabyContext';
 import { useDiary } from '../Context/DiaryContext';
 
 const options = { year: 'numeric', month: 'long', day: 'numeric' };
@@ -195,7 +193,6 @@ const BabyDetailScreen = () => {
                     </Text>
                     <View style={styles.peePoopIconWrapper}>
                         <Entypo
-                            // style={}
                             name="water"
                             size={40}
                             color={isPee ? '#e1e114' : '#aaaaaa'}

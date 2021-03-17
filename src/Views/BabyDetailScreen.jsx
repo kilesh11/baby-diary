@@ -32,14 +32,6 @@ const BabyDetailScreen = () => {
         unregisterBaby,
         selectedBaby,
     } = useBaby();
-    console.log(
-        'kyle_debug ~ file: BabyDetailScreen.jsx ~ line 34 ~ BabyDetailScreen ~ selectedBaby',
-        selectedBaby,
-    );
-    console.log(
-        'kyle_debug ~ file: BabyDetailScreen.jsx ~ line 39 ~ BabyDetailScreen ~ route.params?.babyId',
-        route.params?.babyId,
-    );
 
     const babyParents = useMemo(
         () =>

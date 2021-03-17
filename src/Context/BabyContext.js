@@ -35,7 +35,7 @@ export const BabyProvider = ({ children }) => {
                     queryBabies.sort((a, b) => b.updatedAt.toDate() - a.updatedAt.toDate());
                     setBabies(queryBabies);
                 });
-            return unsubscribe;
+            return () => unsubscribe();
         }
         setSelectedBaby(null);
     }, [user]);

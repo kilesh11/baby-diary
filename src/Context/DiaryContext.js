@@ -34,7 +34,7 @@ export const DiaryProvider = ({ children }) => {
                     queryDiaries.sort((a, b) => b.createdAt.toDate() - a.createdAt.toDate());
                     setDiaries(queryDiaries);
                 });
-            return unsubscribe;
+            return () => unsubscribe();
         }
         if (!user) {
             setSelectedBaby(null);

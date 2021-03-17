@@ -1,3 +1,4 @@
+/* eslint-disable no-nested-ternary */
 /* eslint-disable no-alert */
 /* eslint-disable react/no-unescaped-entities */
 /* eslint-disable react-native/no-raw-text */
@@ -22,7 +23,24 @@ const options = { year: 'numeric', month: 'long', day: 'numeric' };
 const BabyDetailScreen = () => {
     const route = useRoute();
     const navigation = useNavigation();
-    const { babies, addBaby, updateBaby, removeBaby, importBaby, unregisterBaby } = useBaby();
+    const {
+        babies,
+        addBaby,
+        updateBaby,
+        removeBaby,
+        importBaby,
+        unregisterBaby,
+        selectedBaby,
+    } = useBaby();
+    console.log(
+        'kyle_debug ~ file: BabyDetailScreen.jsx ~ line 34 ~ BabyDetailScreen ~ selectedBaby',
+        selectedBaby,
+    );
+    console.log(
+        'kyle_debug ~ file: BabyDetailScreen.jsx ~ line 39 ~ BabyDetailScreen ~ route.params?.babyId',
+        route.params?.babyId,
+    );
+
     const babyParents = useMemo(
         () =>
             route.params?.babyId
@@ -160,20 +178,24 @@ const BabyDetailScreen = () => {
                             <TouchableOpacity style={styles.button} onPress={onModifyBaby}>
                                 <Text style={styles.buttonTitle}>Update</Text>
                             </TouchableOpacity>
-                            {babyParents.length === 1 ? (
-                                <TouchableOpacity
-                                    style={styles.buttonDelete}
-                                    onPress={onDeleteBaby}
-                                >
-                                    <Text style={styles.buttonTitle}>Delete</Text>
-                                </TouchableOpacity>
+                            {selectedBaby !== route.params?.babyId ? (
+                                babyParents.length === 1 ? (
+                                    <TouchableOpacity
+                                        style={styles.buttonDelete}
+                                        onPress={onDeleteBaby}
+                                    >
+                                        <Text style={styles.buttonTitle}>Delete</Text>
+                                    </TouchableOpacity>
+                                ) : (
+                                    <TouchableOpacity
+                                        style={styles.buttonDelete}
+                                        onPress={onUnregisterBaby}
+                                    >
+                                        <Text style={styles.buttonTitle}>Unregister</Text>
+                                    </TouchableOpacity>
+                                )
                             ) : (
-                                <TouchableOpacity
-                                    style={styles.buttonDelete}
-                                    onPress={onUnregisterBaby}
-                                >
-                                    <Text style={styles.buttonTitle}>Unregister</Text>
-                                </TouchableOpacity>
+                                <></>
                             )}
                         </>
                     )}

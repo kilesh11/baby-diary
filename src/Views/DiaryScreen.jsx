@@ -242,7 +242,7 @@ const styles = StyleSheet.create({
     none: { display: 'none' },
     agendaText: { marginLeft: 10, marginTop: 10, fontSize: 20 },
     milkWrapper: { marginLeft: 10, flexDirection: 'row' },
-    milkVolume: { alignSelf: 'center', fontSize: 23 },
+    milkVolume: { marginLeft: 5, alignSelf: 'center', fontSize: 23 },
     rhsWrapper: { flexDirection: 'row' },
     rhsIcon: { marginRight: 10 },
 });

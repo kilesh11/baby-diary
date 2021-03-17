@@ -93,7 +93,7 @@ const styles = StyleSheet.create({
         flex: 1,
     },
     content: {
-        marginHorizontal: 10,
+        marginHorizontal: '3%',
         flex: 1,
     },
     dateRangePickerWrapper: {
@@ -113,7 +113,7 @@ const styles = StyleSheet.create({
         justifyContent: 'space-between',
         backgroundColor: '#788eec',
         height: 100,
-        marginVertical: 10,
+        marginVertical: '3%',
         padding: 10,
         borderRadius: 15,
     },

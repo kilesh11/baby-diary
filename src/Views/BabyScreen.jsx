@@ -61,45 +61,52 @@ const BabyScreen = () => {
         </TouchableOpacity>
     );
 
+    // eslint-disable-next-line no-nested-ternary
     return babies ? (
-        <View style={styles.container}>
-            {babies.length > 0 ? (
-                <>
-                    <FlatList
-                        style={styles.flatList}
-                        data={babies}
-                        keyExtractor={(item) => item.id}
-                        renderItem={renderItem}
-                        numColumns={2}
-                    />
-                    <TouchableOpacity
-                        style={styles.button}
-                        onPress={() => setUpdateMode((prevState) => !prevState)}
-                    >
-                        <Text style={styles.buttonTitle}>Manage Babies</Text>
+        babies.length > 0 ? (
+            <View style={styles.container}>
+                <FlatList
+                    style={styles.flatList}
+                    data={babies}
+                    keyExtractor={(item) => item.id}
+                    renderItem={renderItem}
+                    numColumns={2}
+                />
+                <TouchableOpacity
+                    style={styles.button}
+                    onPress={() => setUpdateMode((prevState) => !prevState)}
+                >
+                    <Text style={styles.buttonTitle}>Manage Babies</Text>
+                </TouchableOpacity>
+                {route.params?.firstLogin && (
+                    <TouchableOpacity style={styles.button} onPress={() => auth.signOut()}>
+                        <Text style={styles.buttonTitle}>Logout</Text>
                     </TouchableOpacity>
-                    {route.params?.firstLogin && (
-                        <TouchableOpacity style={styles.button} onPress={() => auth.signOut()}>
-                            <Text style={styles.buttonTitle}>Logout</Text>
-                        </TouchableOpacity>
-                    )}
-                </>
-            ) : (
+                )}
+
+                <ActionButton
+                    buttonColor="#788eec"
+                    onPress={() =>
+                        natvigation.navigate('BabyDetail', { title: 'Add Baby', create: true })
+                    }
+                />
+            </View>
+        ) : (
+            <View style={styles.container}>
                 <View style={styles.noBabyFound}>
                     <Text style={styles.noBabyFoundText}>Please add baby to continue</Text>
                     <TouchableOpacity style={styles.button} onPress={() => auth.signOut()}>
                         <Text style={styles.buttonTitle}>Logout</Text>
                     </TouchableOpacity>
                 </View>
-            )}
-
-            <ActionButton
-                buttonColor="#788eec"
-                onPress={() =>
-                    natvigation.navigate('BabyDetail', { title: 'Add Baby', create: true })
-                }
-            />
-        </View>
+                <ActionButton
+                    buttonColor="#788eec"
+                    onPress={() =>
+                        natvigation.navigate('BabyDetail', { title: 'Add Baby', create: true })
+                    }
+                />
+            </View>
+        )
     ) : (
         <View style={[styles.loadingContainer, styles.horizontal]}>
             <ActivityIndicator />
@@ -119,6 +126,8 @@ const styles = StyleSheet.create({
     },
     container: {
         flex: 1,
+        // justifyContent: 'center',
+        alignItems: 'center',
     },
     noBabyFound: {
         flex: 1,
@@ -139,6 +148,7 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
     },
     button: {
+        width: Dimensions.get('window').width * 0.8,
         backgroundColor: '#788eec',
         marginLeft: 30,
         marginRight: 30,
@@ -153,8 +163,8 @@ const styles = StyleSheet.create({
         fontSize: 16,
         fontWeight: 'bold',
     },
+
     flatList: {
-        paddingHorizontal: '10%',
         maxHeight: Dimensions.get('window').height * 0.6,
     },
     gridItem: {

@@ -8,6 +8,8 @@ const BabyContext = createContext({
     addBaby: async () => null,
     removeBaby: async () => null,
     updateBaby: async () => null,
+    unregisterBaby: async () => null,
+    importBaby: async () => null,
 });
 
 export const useBaby = () => {
@@ -83,6 +85,40 @@ export const BabyProvider = ({ children }) => {
         }
     }, []);
 
+    const unregisterBaby = useCallback(
+        async (babyId) => {
+            try {
+                await db
+                    .collection('Babies')
+                    .doc(babyId)
+                    .update({
+                        parents: firebase.firestore.FieldValue.arrayRemove(user.uid),
+                    });
+                return true;
+            } catch (err) {
+                return Promise.reject(err);
+            }
+        },
+        [user],
+    );
+
+    const importBaby = useCallback(
+        async (babyId) => {
+            try {
+                await db
+                    .collection('Babies')
+                    .doc(babyId)
+                    .update({
+                        parents: firebase.firestore.FieldValue.arrayUnion(user.uid),
+                    });
+                return true;
+            } catch (err) {
+                return Promise.reject(err);
+            }
+        },
+        [user],
+    );
+
     return (
         <BabyContext.Provider
             value={{
@@ -92,6 +128,8 @@ export const BabyProvider = ({ children }) => {
                 addBaby,
                 removeBaby,
                 updateBaby,
+                unregisterBaby,
+                importBaby,
             }}
         >
             {children}

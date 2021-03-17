@@ -7,6 +7,7 @@ const AuthContext = createContext({
     setUser: () => null,
     register: async () => {},
     logIn: async () => {},
+    updateUser: async () => {},
 });
 
 export const useAuth = () => {
@@ -21,13 +22,13 @@ export const AuthProvider = ({ children }) => {
     useEffect(() => {
         const unsubscribe = auth.onAuthStateChanged(async (newUser) => {
             if (newUser) {
-                await db
-                    .collection('Users')
-                    .doc(newUser.uid)
-                    .set(
-                        { babies: [], email: newUser.email, name: newUser.displayName ?? '' },
-                        { merge: true },
-                    );
+                const firestoreUser = await db.collection('Users').doc(newUser.uid).get();
+                if (!firestoreUser.exists) {
+                    await db
+                        .collection('Users')
+                        .doc(newUser.uid)
+                        .set({ babies: [], email: newUser.email, name: newUser.displayName ?? '' });
+                }
                 setFirebaseUser(newUser);
             } else {
                 setFirebaseUser(null);
@@ -67,10 +68,30 @@ export const AuthProvider = ({ children }) => {
         return true;
     }, []);
 
+    const updateUser = useCallback(
+        async (userName) => {
+            if (userName) {
+                try {
+                    await db.collection('Users').doc(user.uid).update({
+                        name: userName,
+                    });
+                    const firestoreUser = await db.collection('Users').doc(firebaseUser.uid).get();
+                    setUser({ ...firestoreUser.data(), uid: firebaseUser.uid });
+                    return true;
+                } catch (err) {
+                    return Promise.reject(err);
+                }
+            }
+            return true;
+        },
+        [user, firebaseUser],
+    );
+
     return (
         <AuthContext.Provider
             value={{
                 setUser,
+                updateUser,
                 register,
                 logIn,
                 user,

@@ -126,7 +126,6 @@ const styles = StyleSheet.create({
     },
     container: {
         flex: 1,
-        // justifyContent: 'center',
         alignItems: 'center',
     },
     noBabyFound: {
@@ -163,7 +162,6 @@ const styles = StyleSheet.create({
         fontSize: 16,
         fontWeight: 'bold',
     },
-
     flatList: {
         maxHeight: Dimensions.get('window').height * 0.6,
     },

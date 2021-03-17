@@ -59,7 +59,7 @@ const DiaryScreen = () => {
     const { diaries } = useDiary();
     const natvigation = useNavigation();
     const babyBirthDate = useMemo(
-        () => babies?.find((baby) => baby.id === selectedBaby)?.birthDate.toDate(),
+        () => babies?.find((baby) => baby.id === selectedBaby)?.birthDate.toDate() ?? new Date(),
         [babies, selectedBaby],
     );
     const items = useMemo(() => {

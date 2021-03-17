@@ -2,6 +2,7 @@ import React from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { FontAwesome5 } from '@expo/vector-icons';
 import DiaryScreen from './DiaryScreen';
+import DashboardScreen from './DashboardScreen';
 import ProfileScreen from './ProfileScreen';
 
 const Tab = createBottomTabNavigator();
@@ -19,6 +20,9 @@ const HomeScreen = () => {
                             break;
                         case 'Profile':
                             iconName = 'user-alt';
+                            break;
+                        case 'Dashboard':
+                            iconName = 'clipboard';
                             break;
                         default:
                             iconName = 'book';
@@ -39,6 +43,7 @@ const HomeScreen = () => {
             }}
         >
             <Tab.Screen name="Diary" component={DiaryScreen} />
+            <Tab.Screen name="Dashboard" component={DashboardScreen} />
             <Tab.Screen name="Profile" component={ProfileScreen} />
         </Tab.Navigator>
     );

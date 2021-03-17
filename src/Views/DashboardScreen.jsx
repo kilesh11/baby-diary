@@ -22,16 +22,18 @@ const DashboardScreen = () => {
     );
 
     const averageMilkVolume = useMemo(() => {
-        if (diaries && endDate) {
-            const newEndDate = endDate.clone().add(1, 'days');
+        if (diaries && endDate && startDate) {
+            const newEndDate = endDate.clone().add(1, 'days').startOf('day');
+            const newStartDate = startDate.clone().startOf('day');
+
             const total = diaries.reduce((acc, diary) => {
-                if (moment(diary.createdAt.toDate()).isBetween(startDate, newEndDate)) {
+                if (moment(diary.createdAt.toDate()).isBetween(newStartDate, newEndDate)) {
                     const newAcc = acc + (diary.ctx.infantMilk + diary.ctx.breastMilk);
                     return newAcc;
                 }
                 return acc;
             }, 0);
-            return Math.round(total / (newEndDate.diff(startDate, 'days') || 1));
+            return Math.round(total / (newEndDate.diff(newStartDate, 'days') || 1));
         }
         return 0;
     }, [diaries, startDate, endDate]);

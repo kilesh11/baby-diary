@@ -25,15 +25,16 @@ const DashboardScreen = () => {
         if (diaries && endDate && startDate) {
             const newEndDate = endDate.clone().add(1, 'days').startOf('day');
             const newStartDate = startDate.clone().startOf('day');
-
+            let milkDay = 0;
             const total = diaries.reduce((acc, diary) => {
                 if (moment(diary.createdAt.toDate()).isBetween(newStartDate, newEndDate)) {
                     const newAcc = acc + (diary.ctx.infantMilk + diary.ctx.breastMilk);
+                    milkDay += 1;
                     return newAcc;
                 }
                 return acc;
             }, 0);
-            return Math.round(total / (newEndDate.diff(newStartDate, 'days') || 1));
+            return Math.round(total / (milkDay || 1));
         }
         return 0;
     }, [diaries, startDate, endDate]);

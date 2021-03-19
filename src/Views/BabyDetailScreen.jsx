@@ -2,7 +2,9 @@
 /* eslint-disable no-alert */
 /* eslint-disable react/no-unescaped-entities */
 /* eslint-disable react-native/no-raw-text */
-import React, { useState, useCallback, useMemo } from 'react';
+/* eslint-disable global-require */
+import React, { useState, useCallback, useMemo, useEffect } from 'react';
+import firebase from 'firebase';
 import { Button, Dialog, Portal } from 'react-native-paper';
 import {
     Text,
@@ -12,9 +14,14 @@ import {
     TouchableOpacity,
     KeyboardAvoidingView,
     Keyboard,
+    Platform,
+    Image,
+    Alert,
 } from 'react-native';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
+import * as ImagePicker from 'expo-image-picker';
+// import Constants from 'expo-constants';
 import DismissKeyboard from './DismissKeyboard';
 import { useBaby } from '../Context/BabyContext';
 
@@ -32,6 +39,67 @@ const BabyDetailScreen = () => {
         unregisterBaby,
         selectedBaby,
     } = useBaby();
+    const [image, setImage] = useState(null);
+
+    useEffect(() => {
+        (async () => {
+            if (Platform.OS !== 'web') {
+                const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+                if (status !== 'granted') {
+                    alert('Sorry, we need camera roll permissions to make this work!');
+                }
+            }
+        })();
+    }, []);
+
+    useEffect(() => {
+        (async () => {
+            try {
+                const babyImgRef = firebase.storage().ref(`baby/${route.params?.babyId}`);
+                const downloadUrl = await babyImgRef.getDownloadURL();
+                setImage(downloadUrl);
+            } catch (err) {
+                if (err.code === 'storage/object-not-found') {
+                    setImage(null);
+                } else {
+                    Alert.alert('image got problem');
+                }
+            }
+        })();
+    }, [route.params]);
+
+    const pickImage = useCallback(async () => {
+        const result = await ImagePicker.launchImageLibraryAsync({
+            mediaTypes: ImagePicker.MediaTypeOptions.All,
+            allowsEditing: true,
+            aspect: [4, 3],
+            quality: 0.5,
+        });
+        if (!result.cancelled) {
+            await uploadImage(result.uri);
+        }
+    }, [uploadImage]);
+
+    const uploadImage = useCallback(
+        async (uri) => {
+            try {
+                const response = await fetch(uri);
+                const blob = await response.blob();
+
+                const metadata = {
+                    contentType: 'image/jpeg',
+                };
+
+                const ref = firebase.storage().ref().child(`baby/${route.params?.babyId}`);
+                const snapshot = await ref.put(blob, metadata);
+                const downloadUrl = await snapshot.ref.getDownloadURL();
+                setImage(downloadUrl);
+            } catch (err) {
+                Alert.alert(err);
+            }
+        },
+        [route.params],
+    );
 
     const babyParents = useMemo(
         () =>
@@ -132,6 +200,18 @@ const BabyDetailScreen = () => {
         <DismissKeyboard>
             <View style={styles.container}>
                 <KeyboardAvoidingView style={styles.avoidingView} behavior="padding">
+                    {!route.params?.create && (
+                        <TouchableOpacity style={styles.gridItem} onPress={pickImage}>
+                            <Image
+                                style={styles.image}
+                                source={
+                                    image
+                                        ? { uri: image }
+                                        : require('../../assets/default-avatar.jpg')
+                                }
+                            />
+                        </TouchableOpacity>
+                    )}
                     <Text selectable style={styles.babyIdText}>
                         {route.params?.babyId}
                     </Text>
@@ -272,6 +352,22 @@ const styles = StyleSheet.create({
         marginRight: 30,
         paddingLeft: 16,
         paddingTop: 16,
+    },
+    gridItem: {
+        width: 180,
+        height: 180,
+        // backgroundColor: 'red',
+        marginBottom: 20,
+        justifyContent: 'center',
+        alignItems: 'center',
+        alignSelf: 'center',
+    },
+    image: {
+        alignSelf: 'center',
+        height: 180,
+        width: 180,
+        borderRadius: 90,
+        justifyContent: 'center',
     },
     button: {
         backgroundColor: '#788eec',

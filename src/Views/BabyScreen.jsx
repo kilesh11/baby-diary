@@ -1,6 +1,7 @@
 /* eslint-disable react-native/no-inline-styles */
 /* eslint-disable global-require */
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import firebase from 'firebase';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { FontAwesome5 } from '@expo/vector-icons';
 import {
@@ -12,6 +13,7 @@ import {
     ActivityIndicator,
     FlatList,
     Dimensions,
+    Alert,
 } from 'react-native';
 import ActionButton from '../Util/ActionButton/ActionButton';
 import { useBaby } from '../Context/BabyContext';
@@ -22,6 +24,33 @@ const BabyScreen = () => {
     const natvigation = useNavigation();
     const { babies, setSelectedBaby } = useBaby();
     const [updateMode, setUpdateMode] = useState(false);
+    const [babiesUrl, setBabiesUrl] = useState({});
+    // improvement: babyDetailScreen go back BabyScreen no refetch
+    useEffect(() => {
+        (async () => {
+            if (babies && babies.length > 0) {
+                const newBabiesUrl = {};
+                const results = await Promise.all(
+                    babies.map(async (baby) => {
+                        let imageUrl = false;
+                        try {
+                            const babyImgRef = firebase.storage().ref(`baby/${baby.id}`);
+                            imageUrl = await babyImgRef.getDownloadURL();
+                        } catch (err) {
+                            if (err.code !== 'storage/object-not-found') {
+                                Alert.alert('image got problem');
+                            }
+                        }
+                        return { id: baby.id, imageUrl };
+                    }),
+                );
+                results.forEach((result) => {
+                    newBabiesUrl[result.id] = result.imageUrl;
+                });
+                setBabiesUrl(newBabiesUrl);
+            }
+        })();
+    }, [babies]);
 
     const renderItem = (items) => (
         <TouchableOpacity
@@ -45,8 +74,18 @@ const BabyScreen = () => {
             <View style={[styles.gridItemImage, { opacity: updateMode ? 0.4 : 1 }]}>
                 <Image
                     onPress={() => natvigation}
-                    style={styles.image}
-                    source={require('../../assets/default-avatar.jpg')}
+                    style={[
+                        styles.image,
+                        {
+                            ...(updateMode && { borderWidth: 1.5 }),
+                            ...(updateMode && { borderColor: 'white' }),
+                        },
+                    ]}
+                    source={
+                        babiesUrl?.[items.item.id]
+                            ? { uri: babiesUrl?.[items.item.id] }
+                            : require('../../assets/default-avatar.jpg')
+                    }
                 />
                 {updateMode && (
                     <FontAwesome5
@@ -141,8 +180,6 @@ const styles = StyleSheet.create({
         alignSelf: 'center',
         height: 100,
         width: 100,
-        borderWidth: 1.5,
-        borderColor: 'white',
         borderRadius: 50,
         justifyContent: 'center',
     },

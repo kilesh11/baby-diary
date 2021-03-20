@@ -1,8 +1,9 @@
 /* eslint-disable no-nested-ternary */
+/* eslint-disable global-require */
 import React from 'react';
-import { StyleSheet } from 'react-native';
+import { StyleSheet, TouchableOpacity, Image } from 'react-native';
 import { createStackNavigator } from '@react-navigation/stack';
-import { FontAwesome5 } from '@expo/vector-icons';
+// import { FontAwesome5 } from '@expo/vector-icons';
 import { useAuth } from '../Context/AuthContext';
 import { useBaby } from '../Context/BabyContext';
 import LoginScreen from './LoginScreen';
@@ -17,7 +18,7 @@ const Stack = createStackNavigator();
 
 const AppScreen = () => {
     const { user, isLoading } = useAuth();
-    const { selectedBaby, babies } = useBaby();
+    const { selectedBaby, babies, babiesUrl } = useBaby();
 
     return (
         <Stack.Navigator>
@@ -45,13 +46,19 @@ const AppScreen = () => {
                                     shadowOpacity: 0,
                                 },
                                 headerRight: () => (
-                                    <FontAwesome5
-                                        style={styles.headerButton}
-                                        name="baby"
-                                        size={20}
-                                        color="white"
+                                    <TouchableOpacity
+                                        style={styles.gridItem}
                                         onPress={() => navigation.navigate('HomeBaby')}
-                                    />
+                                    >
+                                        <Image
+                                            style={styles.image}
+                                            source={
+                                                babiesUrl?.[selectedBaby]
+                                                    ? { uri: babiesUrl?.[selectedBaby] }
+                                                    : require('../../assets/default-avatar.jpg')
+                                            }
+                                        />
+                                    </TouchableOpacity>
                                 ),
                             })}
                         />
@@ -163,8 +170,21 @@ const AppScreen = () => {
 };
 
 const styles = StyleSheet.create({
-    headerButton: {
-        marginRight: 20,
+    gridItem: {
+        width: 34,
+        height: 34,
+        // backgroundColor: 'red',
+        marginRight: 10,
+        justifyContent: 'center',
+        alignItems: 'center',
+        alignSelf: 'center',
+    },
+    image: {
+        alignSelf: 'center',
+        height: 34,
+        width: 34,
+        borderRadius: 17,
+        justifyContent: 'center',
     },
 });
 

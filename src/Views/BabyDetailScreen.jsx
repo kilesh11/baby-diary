@@ -21,7 +21,6 @@ import {
 import { useNavigation, useRoute } from '@react-navigation/native';
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
 import * as ImagePicker from 'expo-image-picker';
-// import Constants from 'expo-constants';
 import DismissKeyboard from './DismissKeyboard';
 import { useBaby } from '../Context/BabyContext';
 
@@ -32,14 +31,15 @@ const BabyDetailScreen = () => {
     const navigation = useNavigation();
     const {
         babies,
+        babiesUrl,
         addBaby,
         updateBaby,
         removeBaby,
         importBaby,
         unregisterBaby,
         selectedBaby,
+        setBabiesUrl,
     } = useBaby();
-    const [image, setImage] = useState(null);
 
     useEffect(() => {
         (async () => {
@@ -52,25 +52,9 @@ const BabyDetailScreen = () => {
         })();
     }, []);
 
-    useEffect(() => {
-        (async () => {
-            try {
-                const babyImgRef = firebase.storage().ref(`baby/${route.params?.babyId}`);
-                const downloadUrl = await babyImgRef.getDownloadURL();
-                setImage(downloadUrl);
-            } catch (err) {
-                if (err.code === 'storage/object-not-found') {
-                    setImage(null);
-                } else {
-                    Alert.alert('image got problem');
-                }
-            }
-        })();
-    }, [route.params]);
-
     const pickImage = useCallback(async () => {
         const result = await ImagePicker.launchImageLibraryAsync({
-            mediaTypes: ImagePicker.MediaTypeOptions.All,
+            mediaTypes: ImagePicker.MediaTypeOptions.Images,
             allowsEditing: true,
             aspect: [4, 3],
             quality: 0.5,
@@ -85,20 +69,19 @@ const BabyDetailScreen = () => {
             try {
                 const response = await fetch(uri);
                 const blob = await response.blob();
-
-                const metadata = {
-                    contentType: 'image/jpeg',
-                };
-
+                const metadata = { contentType: 'image/jpeg' };
                 const ref = firebase.storage().ref().child(`baby/${route.params?.babyId}`);
                 const snapshot = await ref.put(blob, metadata);
                 const downloadUrl = await snapshot.ref.getDownloadURL();
-                setImage(downloadUrl);
+                setBabiesUrl((prevState) => ({
+                    ...prevState,
+                    [route.params?.babyId]: downloadUrl,
+                }));
             } catch (err) {
                 Alert.alert(err);
             }
         },
-        [route.params],
+        [route.params, setBabiesUrl],
     );
 
     const babyParents = useMemo(
@@ -205,8 +188,8 @@ const BabyDetailScreen = () => {
                             <Image
                                 style={styles.image}
                                 source={
-                                    image
-                                        ? { uri: image }
+                                    babiesUrl?.[route.params?.babyId]
+                                        ? { uri: babiesUrl?.[route.params?.babyId] }
                                         : require('../../assets/default-avatar.jpg')
                                 }
                             />

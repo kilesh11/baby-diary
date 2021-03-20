@@ -1,7 +1,6 @@
 /* eslint-disable react-native/no-inline-styles */
 /* eslint-disable global-require */
-import React, { useState, useEffect } from 'react';
-import firebase from 'firebase';
+import React, { useState } from 'react';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { FontAwesome5 } from '@expo/vector-icons';
 import {
@@ -13,7 +12,6 @@ import {
     ActivityIndicator,
     FlatList,
     Dimensions,
-    Alert,
 } from 'react-native';
 import ActionButton from '../Util/ActionButton/ActionButton';
 import { useBaby } from '../Context/BabyContext';
@@ -22,35 +20,8 @@ import { auth } from '../Util/firebase';
 const BabyScreen = () => {
     const route = useRoute();
     const natvigation = useNavigation();
-    const { babies, setSelectedBaby } = useBaby();
+    const { babies, setSelectedBaby, babiesUrl } = useBaby();
     const [updateMode, setUpdateMode] = useState(false);
-    const [babiesUrl, setBabiesUrl] = useState({});
-    // improvement: babyDetailScreen go back BabyScreen no refetch
-    useEffect(() => {
-        (async () => {
-            if (babies && babies.length > 0) {
-                const newBabiesUrl = {};
-                const results = await Promise.all(
-                    babies.map(async (baby) => {
-                        let imageUrl = false;
-                        try {
-                            const babyImgRef = firebase.storage().ref(`baby/${baby.id}`);
-                            imageUrl = await babyImgRef.getDownloadURL();
-                        } catch (err) {
-                            if (err.code !== 'storage/object-not-found') {
-                                Alert.alert('image got problem');
-                            }
-                        }
-                        return { id: baby.id, imageUrl };
-                    }),
-                );
-                results.forEach((result) => {
-                    newBabiesUrl[result.id] = result.imageUrl;
-                });
-                setBabiesUrl(newBabiesUrl);
-            }
-        })();
-    }, [babies]);
 
     const renderItem = (items) => (
         <TouchableOpacity

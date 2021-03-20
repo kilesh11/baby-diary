@@ -1,15 +1,18 @@
 import firebase from 'firebase';
 import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
+import { Alert } from 'react-native';
 import { db } from '../Util/firebase';
 import { useAuth } from './AuthContext';
 
 const BabyContext = createContext({
     babies: null,
+    babiesUrl: {},
     addBaby: async () => null,
     removeBaby: async () => null,
     updateBaby: async () => null,
     unregisterBaby: async () => null,
     importBaby: async () => null,
+    setBabiesUrl: () => null,
 });
 
 export const useBaby = () => {
@@ -19,6 +22,7 @@ export const useBaby = () => {
 export const BabyProvider = ({ children }) => {
     const { user } = useAuth();
     const [babies, setBabies] = useState(null);
+    const [babiesUrl, setBabiesUrl] = useState({});
     const [selectedBaby, setSelectedBaby] = useState(null);
 
     // eslint-disable-next-line consistent-return
@@ -39,6 +43,32 @@ export const BabyProvider = ({ children }) => {
         }
         setSelectedBaby(null);
     }, [user]);
+
+    useEffect(() => {
+        (async () => {
+            if (babies && babies.length > 0) {
+                const newBabiesUrl = {};
+                const results = await Promise.all(
+                    babies.map(async (baby) => {
+                        let imageUrl = false;
+                        try {
+                            const babyImgRef = firebase.storage().ref(`baby/${baby.id}`);
+                            imageUrl = await babyImgRef.getDownloadURL();
+                        } catch (err) {
+                            if (err.code !== 'storage/object-not-found') {
+                                Alert.alert('image got problem');
+                            }
+                        }
+                        return { id: baby.id, imageUrl };
+                    }),
+                );
+                results.forEach((result) => {
+                    newBabiesUrl[result.id] = result.imageUrl;
+                });
+                setBabiesUrl(newBabiesUrl);
+            }
+        })();
+    }, [babies]);
 
     const addBaby = useCallback(
         async (baby) => {
@@ -123,6 +153,7 @@ export const BabyProvider = ({ children }) => {
         <BabyContext.Provider
             value={{
                 babies,
+                babiesUrl,
                 selectedBaby,
                 setSelectedBaby,
                 addBaby,
@@ -130,6 +161,7 @@ export const BabyProvider = ({ children }) => {
                 updateBaby,
                 unregisterBaby,
                 importBaby,
+                setBabiesUrl,
             }}
         >
             {children}

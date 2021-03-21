@@ -23,7 +23,8 @@ export const BabyProvider = ({ children }) => {
     const { user } = useAuth();
     const [babies, setBabies] = useState(null);
     const [babiesUrl, setBabiesUrl] = useState({});
-    const [selectedBaby, setSelectedBaby] = useState(null);
+    const [selectedBaby, setSelectedBaby] = useState('');
+    const [editBaby, setEditBaby] = useState('');
 
     // eslint-disable-next-line consistent-return
     useEffect(() => {
@@ -156,6 +157,8 @@ export const BabyProvider = ({ children }) => {
                 babiesUrl,
                 selectedBaby,
                 setSelectedBaby,
+                editBaby,
+                setEditBaby,
                 addBaby,
                 removeBaby,
                 updateBaby,

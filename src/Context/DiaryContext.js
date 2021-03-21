@@ -5,10 +5,12 @@ import { useAuth } from './AuthContext';
 import { useBaby } from './BabyContext';
 
 const DiaryContext = createContext({
-    babies: null,
-    addBaby: async () => null,
-    removeBaby: async () => null,
-    updateBaby: async () => null,
+    diaries: [],
+    selectedDiary: '',
+    setSelectedDiary: () => null,
+    addDiary: async () => null,
+    removeDiary: async () => null,
+    updateDiary: async () => null,
 });
 
 export const useDiary = () => {
@@ -18,6 +20,7 @@ export const useDiary = () => {
 export const DiaryProvider = ({ children }) => {
     const { user } = useAuth();
     const { selectedBaby, setSelectedBaby } = useBaby();
+    const [selectedDiary, setSelectedDiary] = useState('');
     const [diaries, setDiaries] = useState(null);
 
     // eslint-disable-next-line consistent-return
@@ -51,8 +54,9 @@ export const DiaryProvider = ({ children }) => {
                         createdAt: firebase.firestore.Timestamp.fromDate(diary.createdAt),
                         baby: selectedBaby,
                         ctx: {
-                            infantMilk: diary.isInfantMilk ? parseInt(diary.milkVolume, 10) : 0,
-                            breastMilk: !diary.isInfantMilk ? parseInt(diary.milkVolume, 10) : 0,
+                            infantMilk: diary.foodType === 0 ? parseInt(diary.milkVolume, 10) : 0,
+                            breastMilk: diary.foodType === 1 ? parseInt(diary.milkVolume, 10) : 0,
+                            food: diary.foodType === 2 ? parseInt(diary.milkVolume, 10) : 0,
                             pee: diary.isPee,
                             poop: diary.isPoop,
                             remark: diary.remark,
@@ -84,8 +88,9 @@ export const DiaryProvider = ({ children }) => {
                 .update({
                     createdAt: firebase.firestore.Timestamp.fromDate(diary.createdAt),
                     ctx: {
-                        infantMilk: diary.isInfantMilk ? parseInt(diary.milkVolume, 10) : 0,
-                        breastMilk: !diary.isInfantMilk ? parseInt(diary.milkVolume, 10) : 0,
+                        infantMilk: diary.foodType === 0 ? parseInt(diary.milkVolume, 10) : 0,
+                        breastMilk: diary.foodType === 1 ? parseInt(diary.milkVolume, 10) : 0,
+                        food: diary.foodType === 2 ? parseInt(diary.milkVolume, 10) : 0,
                         pee: diary.isPee,
                         poop: diary.isPoop,
                         remark: diary.remark,
@@ -101,6 +106,8 @@ export const DiaryProvider = ({ children }) => {
         <DiaryContext.Provider
             value={{
                 diaries,
+                selectedDiary,
+                setSelectedDiary,
                 addDiary,
                 removeDiary,
                 updateDiary,

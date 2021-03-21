@@ -9,10 +9,11 @@ import {
     KeyboardAvoidingView,
     Keyboard,
     TextInput,
+    Text,
 } from 'react-native';
+import { ButtonGroup } from 'react-native-elements';
 import { FontAwesome5, Entypo, MaterialCommunityIcons } from '@expo/vector-icons';
-import { RadioButton, Text } from 'react-native-paper';
-import { useNavigation, useRoute } from '@react-navigation/native';
+import { useNavigation } from '@react-navigation/native';
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
 import DismissKeyboard from './DismissKeyboard';
 import { useDiary } from '../Context/DiaryContext';
@@ -21,23 +22,35 @@ const options = { year: 'numeric', month: 'long', day: 'numeric' };
 
 const getMilkVolume = (diary) => {
     if (diary) {
-        return diary.ctx.infantMilk || diary.ctx.breastMilk;
+        return diary.ctx.infantMilk || diary.ctx.breastMilk || diary.ctx.food;
     }
     return '';
 };
 
+const checkFoodType = (ctx) => {
+    const { infantMilk, breastMilk, food = 0 } = ctx;
+    if (infantMilk) {
+        return 0;
+    }
+    if (breastMilk) {
+        return 1;
+    }
+    if (food) {
+        return 2;
+    }
+    return 0;
+};
+
 const BabyDetailScreen = () => {
-    const route = useRoute();
     const navigation = useNavigation();
-    const { diaries, addDiary, removeDiary, updateDiary } = useDiary();
+    const { diaries, addDiary, removeDiary, updateDiary, selectedDiary } = useDiary();
 
     const editDiary = useMemo(
         () =>
-            route.params?.diaryId
-                ? diaries?.find((diary) => diary.id === route.params?.diaryId) ?? false
+            selectedDiary !== ''
+                ? diaries?.find((diary) => diary.id === selectedDiary) ?? false
                 : false,
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-        [route.params],
+        [selectedDiary, diaries],
     );
     const [createdAtDate, setCreatedAtDate] = useState(
         editDiary ? editDiary?.createdAt.toDate() : new Date(),
@@ -45,7 +58,7 @@ const BabyDetailScreen = () => {
     const [createdAtTime, setCreatedAtTime] = useState(
         editDiary ? editDiary?.createdAt.toDate() : new Date(),
     );
-    const [isInfantMilk, setIsInfantMilk] = useState(editDiary ? editDiary?.ctx.infantMilk : true);
+    const [foodType, setFoodType] = useState(editDiary ? checkFoodType(editDiary?.ctx) : 0);
     const [milkVolume, setMilkVolume] = useState(getMilkVolume(editDiary));
     const [isPee, setIsPee] = useState(editDiary ? editDiary?.ctx.pee : false);
     const [isPoop, setIsPoop] = useState(editDiary ? editDiary?.ctx.poop : false);
@@ -65,7 +78,7 @@ const BabyDetailScreen = () => {
                     createdAtTime.getSeconds(),
                 ),
                 milkVolume: milkVolume === '' ? 0 : milkVolume,
-                isInfantMilk,
+                foodType,
                 isPee,
                 isPoop,
                 remark,
@@ -79,7 +92,7 @@ const BabyDetailScreen = () => {
         createdAtDate,
         createdAtTime,
         milkVolume,
-        isInfantMilk,
+        foodType,
         isPee,
         isPoop,
         remark,
@@ -88,7 +101,7 @@ const BabyDetailScreen = () => {
 
     const onModifyDiary = useCallback(async () => {
         try {
-            await updateDiary(route.params?.diaryId, {
+            await updateDiary(selectedDiary, {
                 createdAt: new Date(
                     createdAtDate.getFullYear(),
                     createdAtDate.getMonth(),
@@ -98,7 +111,7 @@ const BabyDetailScreen = () => {
                     createdAtTime.getSeconds(),
                 ),
                 milkVolume: milkVolume === '' ? 0 : milkVolume,
-                isInfantMilk,
+                foodType,
                 isPee,
                 isPoop,
                 remark,
@@ -112,51 +125,68 @@ const BabyDetailScreen = () => {
         createdAtDate,
         createdAtTime,
         milkVolume,
-        isInfantMilk,
+        foodType,
         isPee,
         isPoop,
         remark,
         navigation,
-        route.params,
+        selectedDiary,
     ]);
 
     const onDeleteDiary = useCallback(async () => {
         try {
-            await removeDiary(route.params?.diaryId);
+            await removeDiary(selectedDiary);
             navigation.goBack();
         } catch (err) {
             alert(err);
         }
-    }, [removeDiary, navigation, route.params]);
+    }, [removeDiary, navigation, selectedDiary]);
+
+    const buttons = useMemo(
+        () => [
+            {
+                element: () => (
+                    <MaterialCommunityIcons
+                        name="baby-bottle-outline"
+                        size={20}
+                        color={foodType === 0 ? '#788eec' : 'grey'}
+                    />
+                ),
+            },
+            {
+                element: () => (
+                    <MaterialCommunityIcons
+                        name="human-female-boy"
+                        size={20}
+                        color={foodType === 1 ? '#FFC0CB' : 'grey'}
+                    />
+                ),
+            },
+            {
+                element: () => (
+                    <MaterialCommunityIcons
+                        name="food-drumstick"
+                        size={20}
+                        color={foodType === 2 ? '#cd7b34' : 'grey'}
+                    />
+                ),
+            },
+        ],
+        [foodType],
+    );
 
     return (
         <DismissKeyboard>
             <View style={styles.container}>
                 <KeyboardAvoidingView style={styles.avoidingView} behavior="padding">
-                    <View style={styles.radioGroupWrapper}>
-                        <RadioButton.Group
-                            onValueChange={(newValue) => setIsInfantMilk(newValue === 'INFANT')}
-                            value={isInfantMilk ? 'INFANT' : 'BREAST'}
-                        >
-                            <View style={styles.radioGroup}>
-                                <View style={styles.radioGroup}>
-                                    <RadioButton value="INFANT" />
-                                    <MaterialCommunityIcons
-                                        name="baby-bottle-outline"
-                                        size={40}
-                                        color="#788eec"
-                                    />
-                                </View>
-                                <View style={styles.radioGroupIcon}>
-                                    <RadioButton value="BREAST" />
-                                    <MaterialCommunityIcons
-                                        name="human-female-boy"
-                                        size={40}
-                                        color="#FFC0CB"
-                                    />
-                                </View>
-                            </View>
-                        </RadioButton.Group>
+                    <View>
+                        <ButtonGroup
+                            onPress={setFoodType}
+                            selectedIndex={foodType}
+                            buttons={buttons}
+                            containerStyle={styles.containerStyle}
+                            selectedButtonStyle={styles.selectedButtonStyle}
+                        />
                     </View>
                     <TextInput
                         keyboardType="number-pad"
@@ -215,7 +245,7 @@ const BabyDetailScreen = () => {
                         underlineColorAndroid="transparent"
                         autoCapitalize="none"
                     />
-                    {route.params?.create ? (
+                    {selectedDiary === '' ? (
                         <TouchableOpacity style={styles.button} onPress={onAddDiary}>
                             <Text style={styles.buttonTitle}>Save</Text>
                         </TouchableOpacity>
@@ -256,7 +286,6 @@ const BabyDetailScreen = () => {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        // alignItems: 'center',
     },
     avoidingView: {
         flex: 1,
@@ -267,10 +296,8 @@ const styles = StyleSheet.create({
         borderRadius: 5,
         overflow: 'hidden',
         backgroundColor: 'white',
-        marginTop: 10,
-        marginBottom: 10,
-        marginLeft: 30,
-        marginRight: 30,
+        marginVertical: 10,
+        marginHorizontal: 30,
         paddingLeft: 16,
     },
     dateText: {
@@ -278,17 +305,14 @@ const styles = StyleSheet.create({
         borderRadius: 5,
         overflow: 'hidden',
         backgroundColor: 'white',
-        marginTop: 10,
-        marginBottom: 10,
-        marginLeft: 30,
-        marginRight: 30,
+        marginVertical: 10,
+        marginHorizontal: 30,
         paddingLeft: 16,
         paddingTop: 16,
     },
     button: {
         backgroundColor: '#788eec',
-        marginLeft: 30,
-        marginRight: 30,
+        marginHorizontal: 30,
         marginTop: 20,
         height: 48,
         borderRadius: 5,
@@ -297,8 +321,7 @@ const styles = StyleSheet.create({
     },
     buttonDelete: {
         backgroundColor: '#dc3545',
-        marginLeft: 30,
-        marginRight: 30,
+        marginHorizontal: 30,
         marginTop: 20,
         height: 48,
         borderRadius: 5,
@@ -310,17 +333,9 @@ const styles = StyleSheet.create({
         fontSize: 16,
         fontWeight: 'bold',
     },
-    radioGroupWrapper: {
-        marginLeft: 30,
-    },
-    radioGroup: {
-        flexDirection: 'row',
-    },
-    radioGroupIcon: {
-        flexDirection: 'row',
-        marginLeft: 10,
-    },
-    peePoopIconWrapper: { flexDirection: 'row', marginVertical: 10, marginLeft: 30 },
+    containerStyle: { marginHorizontal: 30 },
+    selectedButtonStyle: { backgroundColor: 'transparent' },
+    peePoopIconWrapper: { flexDirection: 'row', marginVertical: 10, alignSelf: 'center' },
     poopIcon: { marginLeft: 30 },
 });
 

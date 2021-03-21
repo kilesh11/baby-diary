@@ -24,29 +24,36 @@ const parseDiaries = (diaries) => {
     const parsedDiaries = {};
     diaries.forEach((diary) => {
         const date = getDate(diary.createdAt.toDate());
+        const {
+            createdAt,
+            id,
+            ctx: { breastMilk, infantMilk, food, pee, poop, remark },
+        } = diary;
         if (date in parsedDiaries) {
             parsedDiaries[date] = [
                 {
-                    breastMilk: diary.ctx.breastMilk,
-                    infantMilk: diary.ctx.infantMilk,
-                    pee: diary.ctx.pee,
-                    poop: diary.ctx.poop,
-                    remark: diary.ctx.remark,
-                    createdAt: diary.createdAt.toDate(),
-                    id: diary.id,
+                    breastMilk,
+                    infantMilk,
+                    food,
+                    pee,
+                    poop,
+                    remark,
+                    createdAt: createdAt.toDate(),
+                    id,
                 },
                 ...parsedDiaries[date],
             ];
         } else {
             parsedDiaries[date] = [
                 {
-                    breastMilk: diary.ctx.breastMilk,
-                    infantMilk: diary.ctx.infantMilk,
-                    pee: diary.ctx.pee,
-                    poop: diary.ctx.poop,
-                    remark: diary.ctx.remark,
-                    createdAt: diary.createdAt.toDate(),
-                    id: diary.id,
+                    breastMilk,
+                    infantMilk,
+                    food,
+                    pee,
+                    poop,
+                    remark,
+                    createdAt: createdAt.toDate(),
+                    id,
                 },
             ];
         }
@@ -56,7 +63,7 @@ const parseDiaries = (diaries) => {
 
 const DiaryScreen = () => {
     const { babies, selectedBaby } = useBaby();
-    const { diaries } = useDiary();
+    const { diaries, setSelectedDiary } = useDiary();
     const natvigation = useNavigation();
     const babyBirthDate = useMemo(
         () => babies?.find((baby) => baby.id === selectedBaby)?.birthDate.toDate() ?? new Date(),
@@ -71,27 +78,32 @@ const DiaryScreen = () => {
 
     const renderItem = (item) => (
         <TouchableOpacity
-            onPress={() =>
-                natvigation.navigate('DiaryDetail', {
-                    title: 'Edit Diary',
-                    create: false,
-                    diaryId: item.id,
-                })
-            }
+            onPress={() => {
+                setSelectedDiary(item.id);
+                natvigation.navigate('DiaryDetail', { title: 'Edit Diary' });
+            }}
         >
             <View style={styles.agendaWrapper}>
                 <Text style={styles.agendaText}>{getTime(item.createdAt)}</Text>
                 <View style={styles.agendaItem}>
                     <View style={styles.milkWrapper}>
-                        {item.breastMilk || item.infantMilk ? (
+                        {item.breastMilk || item.infantMilk || item.food ? (
                             <>
-                                <MaterialCommunityIcons
-                                    name="baby-bottle-outline"
-                                    size={30}
-                                    color={item.infantMilk ? '#788eec' : '#FFC0CB'}
-                                />
+                                {item.breastMilk || item.infantMilk ? (
+                                    <MaterialCommunityIcons
+                                        name="baby-bottle-outline"
+                                        size={30}
+                                        color={item.infantMilk ? '#788eec' : '#FFC0CB'}
+                                    />
+                                ) : (
+                                    <MaterialCommunityIcons
+                                        name="food-drumstick"
+                                        size={30}
+                                        color="#cd7b34"
+                                    />
+                                )}
                                 <Text style={styles.milkVolume}>
-                                    {item.breastMilk || item.infantMilk}
+                                    {item.breastMilk || item.infantMilk || item.food}
                                 </Text>
                             </>
                         ) : (
@@ -212,9 +224,10 @@ const DiaryScreen = () => {
             />
             <ActionButton
                 buttonColor="#788eec"
-                onPress={() =>
-                    natvigation.navigate('DiaryDetail', { title: 'Add Diary', create: true })
-                }
+                onPress={() => {
+                    setSelectedDiary('');
+                    natvigation.navigate('DiaryDetail', { title: 'Add Diary' });
+                }}
             />
         </>
     );

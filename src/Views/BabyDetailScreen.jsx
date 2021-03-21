@@ -5,7 +5,7 @@
 /* eslint-disable global-require */
 import React, { useState, useCallback, useMemo, useEffect } from 'react';
 import firebase from 'firebase';
-import { Button, Dialog, Portal } from 'react-native-paper';
+import { Overlay } from 'react-native-elements';
 import {
     Text,
     View,
@@ -17,6 +17,7 @@ import {
     Platform,
     Image,
     Alert,
+    Dimensions,
 } from 'react-native';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
@@ -38,8 +39,14 @@ const BabyDetailScreen = () => {
         importBaby,
         unregisterBaby,
         selectedBaby,
+        editBaby,
         setBabiesUrl,
     } = useBaby();
+
+    const onEditBaby = useMemo(
+        () => (editBaby !== '' ? babies?.find((baby) => baby.id === editBaby) ?? false : false),
+        [editBaby, babies],
+    );
 
     useEffect(() => {
         (async () => {
@@ -70,36 +77,23 @@ const BabyDetailScreen = () => {
                 const response = await fetch(uri);
                 const blob = await response.blob();
                 const metadata = { contentType: 'image/jpeg' };
-                const ref = firebase.storage().ref().child(`baby/${route.params?.babyId}`);
+                const ref = firebase.storage().ref().child(`baby/${editBaby}`);
                 const snapshot = await ref.put(blob, metadata);
                 const downloadUrl = await snapshot.ref.getDownloadURL();
                 setBabiesUrl((prevState) => ({
                     ...prevState,
-                    [route.params?.babyId]: downloadUrl,
+                    [editBaby]: downloadUrl,
                 }));
             } catch (err) {
                 Alert.alert(err);
             }
         },
-        [route.params, setBabiesUrl],
+        [editBaby, setBabiesUrl],
     );
 
-    const babyParents = useMemo(
-        () =>
-            route.params?.babyId
-                ? babies?.find((baby) => baby.id === route.params?.babyId)?.parents ?? []
-                : [],
-        [route.params, babies],
-    );
-    const [name, setName] = useState(
-        route.params?.babyId
-            ? babies?.find((baby) => baby.id === route.params?.babyId)?.name ?? ''
-            : '',
-    );
+    const [name, setName] = useState(onEditBaby ? onEditBaby.name ?? '' : '');
     const [birthDate, setBirthDate] = useState(
-        route.params?.babyId
-            ? babies?.find((baby) => baby.id === route.params?.babyId)?.birthDate.toDate() ?? null
-            : null,
+        onEditBaby ? onEditBaby.birthDate.toDate() ?? null : null,
     );
     const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
     const [visible, setVisible] = useState(false);
@@ -120,7 +114,7 @@ const BabyDetailScreen = () => {
 
     const onModifyBaby = useCallback(async () => {
         try {
-            await updateBaby(route.params?.babyId, { birthDate, name });
+            await updateBaby(editBaby, { birthDate, name });
             if (route.params.firstLogin) {
                 navigation.navigate('ChooseBaby');
             } else {
@@ -129,11 +123,11 @@ const BabyDetailScreen = () => {
         } catch (err) {
             alert(err);
         }
-    }, [updateBaby, birthDate, name, navigation, route.params]);
+    }, [updateBaby, birthDate, name, navigation, route.params, editBaby]);
 
     const onDeleteBaby = useCallback(async () => {
         try {
-            await removeBaby(route.params?.babyId);
+            await removeBaby(editBaby);
             if (route.params.firstLogin) {
                 navigation.navigate('ChooseBaby');
             } else {
@@ -142,7 +136,7 @@ const BabyDetailScreen = () => {
         } catch (err) {
             alert(err);
         }
-    }, [removeBaby, navigation, route.params]);
+    }, [removeBaby, navigation, route.params, editBaby]);
 
     const onImportBaby = useCallback(async () => {
         try {
@@ -160,7 +154,7 @@ const BabyDetailScreen = () => {
 
     const onUnregisterBaby = useCallback(async () => {
         try {
-            await unregisterBaby(route.params?.babyId);
+            await unregisterBaby(editBaby);
             if (route.params.firstLogin) {
                 navigation.navigate('ChooseBaby');
             } else {
@@ -169,7 +163,7 @@ const BabyDetailScreen = () => {
         } catch (err) {
             alert(err);
         }
-    }, [unregisterBaby, navigation, route.params]);
+    }, [unregisterBaby, navigation, route.params, editBaby]);
 
     const showDialog = useCallback(() => {
         setVisible(true);
@@ -183,20 +177,20 @@ const BabyDetailScreen = () => {
         <DismissKeyboard>
             <View style={styles.container}>
                 <KeyboardAvoidingView style={styles.avoidingView} behavior="padding">
-                    {!route.params?.create && (
+                    {editBaby !== '' && (
                         <TouchableOpacity style={styles.gridItem} onPress={pickImage}>
                             <Image
                                 style={styles.image}
                                 source={
-                                    babiesUrl?.[route.params?.babyId]
-                                        ? { uri: babiesUrl?.[route.params?.babyId] }
+                                    babiesUrl?.[editBaby]
+                                        ? { uri: babiesUrl?.[editBaby] }
                                         : require('../../assets/default-avatar.jpg')
                                 }
                             />
                         </TouchableOpacity>
                     )}
                     <Text selectable style={styles.babyIdText}>
-                        {route.params?.babyId}
+                        {editBaby}
                     </Text>
                     <TextInput
                         style={styles.input}
@@ -219,7 +213,7 @@ const BabyDetailScreen = () => {
                     >
                         {birthDate?.toLocaleDateString(undefined, options) ?? 'Birth Date'}
                     </Text>
-                    {route.params?.create ? (
+                    {editBaby === '' ? (
                         <>
                             <TouchableOpacity style={styles.button} onPress={onAddBaby}>
                                 <Text style={styles.buttonTitle}>Save</Text>
@@ -233,8 +227,8 @@ const BabyDetailScreen = () => {
                             <TouchableOpacity style={styles.button} onPress={onModifyBaby}>
                                 <Text style={styles.buttonTitle}>Update</Text>
                             </TouchableOpacity>
-                            {selectedBaby !== route.params?.babyId ? (
-                                babyParents.length === 1 ? (
+                            {selectedBaby !== editBaby ? (
+                                onEditBaby?.parents.length === 1 ? (
                                     <TouchableOpacity
                                         style={styles.buttonDelete}
                                         onPress={onDeleteBaby}
@@ -264,27 +258,27 @@ const BabyDetailScreen = () => {
                         onCancel={() => setDatePickerVisibility(false)}
                     />
                 </KeyboardAvoidingView>
-                <Portal>
-                    <Dialog visible={visible} onDismiss={hideDialog}>
-                        <Dialog.Title>Import</Dialog.Title>
-                        <Dialog.Content>
-                            <TextInput
-                                style={styles.dialogInput}
-                                placeholder="Baby ID"
-                                placeholderTextColor="#aaaaaa"
-                                onChangeText={setImportBabyId}
-                                value={importBabyId}
-                                underlineColorAndroid="transparent"
-                                autoCapitalize="none"
-                            />
-                        </Dialog.Content>
-                        <Dialog.Actions>
-                            <Button color="#788eec" onPress={onImportBaby}>
-                                Import
-                            </Button>
-                        </Dialog.Actions>
-                    </Dialog>
-                </Portal>
+                <Overlay
+                    isVisible={visible}
+                    overlayStyle={styles.overlayStyle}
+                    onBackdropPress={() => setVisible((prevState) => !prevState)}
+                >
+                    <View style={styles.overlayContainerStyle}>
+                        <Text style={styles.overlayTitleStyle}>Import</Text>
+                        <TextInput
+                            style={styles.dialogInput}
+                            placeholder="Baby ID"
+                            placeholderTextColor="#aaaaaa"
+                            onChangeText={setImportBabyId}
+                            value={importBabyId}
+                            underlineColorAndroid="transparent"
+                            autoCapitalize="none"
+                        />
+                        <TouchableOpacity style={styles.button} onPress={onImportBaby}>
+                            <Text style={styles.buttonTitle}>Import</Text>
+                        </TouchableOpacity>
+                    </View>
+                </Overlay>
             </View>
         </DismissKeyboard>
     );
@@ -293,7 +287,6 @@ const BabyDetailScreen = () => {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        // alignItems: 'center',
     },
     babyIdText: {
         alignSelf: 'center',
@@ -307,10 +300,7 @@ const styles = StyleSheet.create({
         borderRadius: 5,
         borderColor: '#788eec',
         borderWidth: 1,
-        marginTop: 10,
-        marginBottom: 10,
-        marginLeft: 10,
-        marginRight: 10,
+        marginVertical: 10,
         paddingLeft: 16,
     },
     input: {
@@ -318,10 +308,8 @@ const styles = StyleSheet.create({
         borderRadius: 5,
         overflow: 'hidden',
         backgroundColor: 'white',
-        marginTop: 10,
-        marginBottom: 10,
-        marginLeft: 30,
-        marginRight: 30,
+        marginVertical: 10,
+        marginHorizontal: 30,
         paddingLeft: 16,
     },
     dateText: {
@@ -329,17 +317,14 @@ const styles = StyleSheet.create({
         borderRadius: 5,
         overflow: 'hidden',
         backgroundColor: 'white',
-        marginTop: 10,
-        marginBottom: 10,
-        marginLeft: 30,
-        marginRight: 30,
+        marginVertical: 10,
+        marginHorizontal: 30,
         paddingLeft: 16,
         paddingTop: 16,
     },
     gridItem: {
         width: 180,
         height: 180,
-        // backgroundColor: 'red',
         marginBottom: 20,
         justifyContent: 'center',
         alignItems: 'center',
@@ -354,8 +339,7 @@ const styles = StyleSheet.create({
     },
     button: {
         backgroundColor: '#788eec',
-        marginLeft: 30,
-        marginRight: 30,
+        marginHorizontal: 30,
         marginTop: 20,
         height: 48,
         borderRadius: 5,
@@ -364,8 +348,7 @@ const styles = StyleSheet.create({
     },
     buttonDelete: {
         backgroundColor: '#dc3545',
-        marginLeft: 30,
-        marginRight: 30,
+        marginHorizontal: 30,
         marginTop: 20,
         height: 48,
         borderRadius: 5,
@@ -376,6 +359,15 @@ const styles = StyleSheet.create({
         color: 'white',
         fontSize: 16,
         fontWeight: 'bold',
+    },
+    overlayStyle: {
+        width: Dimensions.get('window').width * 0.8,
+    },
+    overlayContainerStyle: { margin: 10 },
+    overlayTitleStyle: {
+        alignSelf: 'flex-start',
+        fontSize: 25,
+        marginBottom: 10,
     },
 });
 

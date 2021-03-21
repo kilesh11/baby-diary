@@ -20,7 +20,7 @@ import { auth } from '../Util/firebase';
 const BabyScreen = () => {
     const route = useRoute();
     const natvigation = useNavigation();
-    const { babies, setSelectedBaby, babiesUrl } = useBaby();
+    const { babies, setSelectedBaby, babiesUrl, setEditBaby } = useBaby();
     const [updateMode, setUpdateMode] = useState(false);
 
     const renderItem = (items) => (
@@ -29,11 +29,8 @@ const BabyScreen = () => {
             onPress={() => {
                 if (updateMode) {
                     setUpdateMode(false);
-                    natvigation.navigate('BabyDetail', {
-                        title: items.item.name ?? 'Baby',
-                        create: false,
-                        babyId: items.item.id,
-                    });
+                    setEditBaby(items.item.id);
+                    natvigation.navigate('BabyDetail', { title: items.item.name ?? 'Baby' });
                 } else {
                     setSelectedBaby(items.item.id);
                     if (!route.params?.firstLogin) {
@@ -96,9 +93,10 @@ const BabyScreen = () => {
 
                 <ActionButton
                     buttonColor="#788eec"
-                    onPress={() =>
-                        natvigation.navigate('BabyDetail', { title: 'Add Baby', create: true })
-                    }
+                    onPress={() => {
+                        setEditBaby('');
+                        natvigation.navigate('BabyDetail', { title: 'Add Baby' });
+                    }}
                 />
             </View>
         ) : (
@@ -111,9 +109,10 @@ const BabyScreen = () => {
                 </View>
                 <ActionButton
                     buttonColor="#788eec"
-                    onPress={() =>
-                        natvigation.navigate('BabyDetail', { title: 'Add Baby', create: true })
-                    }
+                    onPress={() => {
+                        setEditBaby('');
+                        natvigation.navigate('BabyDetail', { title: 'Add Baby' });
+                    }}
                 />
             </View>
         )

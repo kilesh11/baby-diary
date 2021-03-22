@@ -1,11 +1,12 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Text, View, TouchableOpacity, StyleSheet, TextInput, Alert } from 'react-native';
-import { useState } from 'react/cjs/react.development';
 import { useAuth } from '../Context/AuthContext';
 import { auth } from '../Util/firebase';
 import DismissKeyboard from './DismissKeyboard';
 
 const ProfileScreen = () => {
+    const { t } = useTranslation();
     const { user, updateUser } = useAuth();
     const [userName, setUserName] = useState(user?.name ?? '');
 
@@ -20,7 +21,7 @@ const ProfileScreen = () => {
     return (
         <DismissKeyboard>
             <View style={styles.container}>
-                <Text style={styles.text}>Welcome</Text>
+                <Text style={styles.text}>{t('welcome')}</Text>
                 <Text style={styles.text}>{user?.name || user?.email}</Text>
                 <TextInput
                     style={styles.input}

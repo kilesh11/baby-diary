@@ -9,6 +9,7 @@ import {
     TouchableOpacity,
     TextInput,
     KeyboardAvoidingView,
+    Alert,
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { useAuth } from '../Context/AuthContext';
@@ -36,7 +37,11 @@ const RegistrationScreen = () => {
             alert("Passwords don't match.");
             return null;
         }
-        await register(email, password);
+        try {
+            await register(email, password);
+        } catch (err) {
+            Alert.alert(err);
+        }
         return null;
     };
 

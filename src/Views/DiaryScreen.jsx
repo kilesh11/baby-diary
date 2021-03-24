@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useCallback } from 'react';
 import { Text, View, TouchableOpacity, StyleSheet } from 'react-native';
 import { FontAwesome5, Entypo, MaterialCommunityIcons } from '@expo/vector-icons';
 import { useTranslation } from 'react-i18next';
@@ -9,9 +9,14 @@ import { useBaby } from '../Context/BabyContext';
 import { useDiary } from '../Context/DiaryContext';
 
 const getTime = (date) => {
-    const hour = `0${date.getHours()}`.slice(-2);
+    let ampm = 'AM';
+    let hour = `0${date.getHours()}`.slice(-2);
+    if (hour > 12) {
+        hour -= 12;
+        ampm = 'PM';
+    }
     const minute = `0${date.getMinutes()}`.slice(-2);
-    return `${hour}:${minute}`;
+    return `${hour}:${minute}${ampm}`;
 };
 
 const getDate = (date) => {
@@ -78,65 +83,75 @@ const DiaryScreen = () => {
         return {};
     }, [diaries]);
 
-    const renderItem = (item) => (
-        <TouchableOpacity
-            onPress={() => {
-                setSelectedDiary(item.id);
-                natvigation.navigate('DiaryDetail', { title: t('DiaryScreen.editDiaryTitle') });
-            }}
-        >
-            <View style={styles.agendaWrapper}>
-                <Text style={styles.agendaText}>{getTime(item.createdAt)}</Text>
-                <View style={styles.agendaItem}>
-                    <View style={styles.milkWrapper}>
-                        {item.breastMilk || item.infantMilk || item.food ? (
-                            <>
-                                {item.breastMilk || item.infantMilk ? (
-                                    <MaterialCommunityIcons
-                                        name="baby-bottle-outline"
-                                        size={30}
-                                        color={item.infantMilk ? '#788eec' : '#FFC0CB'}
-                                    />
-                                ) : (
-                                    <MaterialCommunityIcons
-                                        name="food-drumstick"
-                                        size={30}
-                                        color="#cd7b34"
-                                    />
-                                )}
-                                <Text style={styles.milkVolume}>
-                                    {item.breastMilk || item.infantMilk || item.food}
-                                </Text>
-                            </>
-                        ) : (
-                            <Text style={styles.none} />
-                        )}
-                    </View>
-                    <View style={styles.rhsWrapper}>
-                        {item.pee && (
-                            <Entypo style={styles.rhsIcon} name="water" size={30} color="#e1e114" />
-                        )}
-                        {item.poop && (
-                            <FontAwesome5
-                                style={styles.rhsIcon}
-                                name="poo"
-                                size={30}
-                                color="#7a5901"
-                            />
-                        )}
-                        {item.remark.length > 0 && (
-                            <FontAwesome5
-                                style={styles.rhsIcon}
-                                name="comment"
-                                size={30}
-                                color="#788eec"
-                            />
-                        )}
+    const renderItem = useCallback(
+        (item) => (
+            <TouchableOpacity
+                onPress={() => {
+                    setSelectedDiary(item.id);
+                    natvigation.navigate('DiaryDetail', { title: t('DiaryScreen.editDiaryTitle') });
+                }}
+            >
+                <View style={styles.agendaWrapper}>
+                    <Text style={styles.agendaText}>{getTime(item.createdAt)}</Text>
+                    <View style={styles.agendaItem}>
+                        <View style={styles.milkWrapper}>
+                            {item.breastMilk || item.infantMilk || item.food ? (
+                                <>
+                                    {item.breastMilk || item.infantMilk ? (
+                                        <MaterialCommunityIcons
+                                            name="baby-bottle-outline"
+                                            size={30}
+                                            color={item.infantMilk ? '#788eec' : '#FFC0CB'}
+                                        />
+                                    ) : (
+                                        <MaterialCommunityIcons
+                                            name="food-drumstick"
+                                            size={30}
+                                            color="#cd7b34"
+                                        />
+                                    )}
+                                    <Text style={styles.milkVolume}>
+                                        {item.breastMilk || item.infantMilk || item.food}
+                                    </Text>
+                                </>
+                            ) : (
+                                <Text style={styles.none} />
+                            )}
+                        </View>
+                        <View style={styles.rhsWrapper}>
+                            {item.pee && (
+                                <Entypo
+                                    style={styles.rhsIcon}
+                                    name="water"
+                                    size={30}
+                                    color="#e1e114"
+                                />
+                            )}
+                            {item.poop && (
+                                <FontAwesome5
+                                    style={styles.rhsIcon}
+                                    name="poo"
+                                    size={30}
+                                    color="#7a5901"
+                                />
+                            )}
+                            {item.remark.length > 0 && (
+                                <FontAwesome5
+                                    style={styles.rhsIcon}
+                                    name="comment"
+                                    size={30}
+                                    color="#788eec"
+                                />
+                            )}
+                        </View>
                     </View>
                 </View>
-            </View>
-        </TouchableOpacity>
+            </TouchableOpacity>
+        ),
+        [natvigation, setSelectedDiary, t],
     );
+    const memoizedValue = useMemo(() => renderItem, [renderItem]);
+
     return (
         <>
             <Agenda
@@ -171,7 +186,7 @@ const DiaryScreen = () => {
                 // // Max amount of months allowed to scroll to the future. Default = 50
                 futureScrollRange={10}
                 // // Specify how each item should be rendered in agenda
-                renderItem={renderItem}
+                renderItem={memoizedValue}
                 // // Specify how each date should be rendered. day can be undefined if the item is not first in that day.
                 // renderDay={(day, item) => {
                 //     return <View />;

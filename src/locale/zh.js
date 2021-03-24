@@ -1,0 +1,66 @@
+export default {
+    foo: 'Foo',
+    bar: 'Bar {{someValue}}',
+    AppScreen: {
+        loginTitle: '登入',
+        registrationTitle: '登記',
+        chooseBabyTitle: '請選擇',
+        homeBabyTitle: '寶寶',
+    },
+    ProfileScreen: {
+        namePlaceholder: '名字',
+        welcomeTitle: '歡迎',
+        updateProfileBtn: '更新',
+        logoutBtn: '登出',
+    },
+    LoginScreen: {
+        emailPlaceholder: '電郵',
+        passwordPlaceholder: '密碼',
+        loginBtn: '登入',
+        registerTitle: '沒有帳號?',
+        registerBtn: '登記',
+    },
+    RegistrationScreen: {
+        emailPlaceholder: '電郵',
+        passwordPlaceholder: '密碼',
+        confirmPasswordPlaceholder: '確認密碼',
+        createAccountBtn: '創建帳號',
+        loginTitle: '已經有一個帳號?',
+        loginBtn: '登入',
+    },
+    BabyScreen: {
+        manageBabyBtn: '管理寶寶',
+        logoutBtn: '登出',
+        addBabyTitle: '請新增寶寶',
+    },
+    BabyDetailScreen: {
+        namePlaceholder: '名字',
+        saveBtn: '確認',
+        importBtn: '匯入寶寶',
+        updateBtn: '更新',
+        deleteBtn: '刪除',
+        unRegBtn: '斷開連結',
+        importDialogTitle: '匯入寶寶',
+        babyIdPlaceholder: '寶寶 ID',
+        importDialogSaveBtn: '匯入',
+    },
+    HomeScreen: {
+        diaryTab: '日記',
+        dashboardTab: '總結',
+        profileTab: '用戶',
+    },
+    DiaryScreen: {
+        editDiaryTitle: '更新日記',
+        addDiaryTitle: '新增日記',
+    },
+    DiaryDetailScreen: {
+        volumePlaceholder: '容量',
+        remarkPlaceholder: '備註',
+        saveBtn: '確認',
+        updateBtn: '更新',
+        deleteBtn: '刪除',
+    },
+    DashboardScreen: {
+        averageMilkTitle: '平衡攝取量',
+    },
+};

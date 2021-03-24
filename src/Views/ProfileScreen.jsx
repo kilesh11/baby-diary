@@ -21,11 +21,11 @@ const ProfileScreen = () => {
     return (
         <DismissKeyboard>
             <View style={styles.container}>
-                <Text style={styles.text}>{t('welcome')}</Text>
+                <Text style={styles.text}>{t('ProfileScreen.welcomeTitle')}</Text>
                 <Text style={styles.text}>{user?.name || user?.email}</Text>
                 <TextInput
                     style={styles.input}
-                    placeholder="Name"
+                    placeholder={t('ProfileScreen.namePlaceholder')}
                     placeholderTextColor="#aaaaaa"
                     onChangeText={setUserName}
                     value={userName}
@@ -33,10 +33,10 @@ const ProfileScreen = () => {
                     autoCapitalize="none"
                 />
                 <TouchableOpacity style={styles.button} onPress={onUpdateUser}>
-                    <Text style={styles.buttonTitle}>Update Profile</Text>
+                    <Text style={styles.buttonTitle}>{t('ProfileScreen.updateProfileBtn')}</Text>
                 </TouchableOpacity>
                 <TouchableOpacity style={styles.button} onPress={() => auth.signOut()}>
-                    <Text style={styles.buttonTitle}>Logout</Text>
+                    <Text style={styles.buttonTitle}>{t('ProfileScreen.logoutBtn')}</Text>
                 </TouchableOpacity>
             </View>
         </DismissKeyboard>

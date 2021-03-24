@@ -1,6 +1,7 @@
 import React, { useMemo } from 'react';
 import { Text, View, TouchableOpacity, StyleSheet } from 'react-native';
 import { FontAwesome5, Entypo, MaterialCommunityIcons } from '@expo/vector-icons';
+import { useTranslation } from 'react-i18next';
 import { Agenda } from 'react-native-calendars';
 import { useNavigation } from '@react-navigation/native';
 import ActionButton from '../Util/ActionButton/ActionButton';
@@ -62,6 +63,7 @@ const parseDiaries = (diaries) => {
 };
 
 const DiaryScreen = () => {
+    const { t } = useTranslation();
     const { babies, selectedBaby } = useBaby();
     const { diaries, setSelectedDiary } = useDiary();
     const natvigation = useNavigation();
@@ -80,7 +82,7 @@ const DiaryScreen = () => {
         <TouchableOpacity
             onPress={() => {
                 setSelectedDiary(item.id);
-                natvigation.navigate('DiaryDetail', { title: 'Edit Diary' });
+                natvigation.navigate('DiaryDetail', { title: t('DiaryScreen.editDiaryTitle') });
             }}
         >
             <View style={styles.agendaWrapper}>
@@ -226,7 +228,7 @@ const DiaryScreen = () => {
                 buttonColor="#788eec"
                 onPress={() => {
                     setSelectedDiary('');
-                    natvigation.navigate('DiaryDetail', { title: 'Add Diary' });
+                    natvigation.navigate('DiaryDetail', { title: t('DiaryScreen.addDiaryTitle') });
                 }}
             />
         </>

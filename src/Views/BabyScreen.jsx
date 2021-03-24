@@ -3,6 +3,7 @@
 import React, { useState } from 'react';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { FontAwesome5 } from '@expo/vector-icons';
+import { useTranslation } from 'react-i18next';
 import {
     Text,
     View,
@@ -18,6 +19,7 @@ import { useBaby } from '../Context/BabyContext';
 import { auth } from '../Util/firebase';
 
 const BabyScreen = () => {
+    const { t } = useTranslation();
     const route = useRoute();
     const natvigation = useNavigation();
     const { babies, setSelectedBaby, babiesUrl, setEditBaby } = useBaby();
@@ -46,7 +48,7 @@ const BabyScreen = () => {
                         styles.image,
                         {
                             ...(updateMode && { borderWidth: 1.5 }),
-                            ...(updateMode && { borderColor: 'white' }),
+                            ...(updateMode && { borderColor: 'black' }),
                         },
                     ]}
                     source={
@@ -83,11 +85,11 @@ const BabyScreen = () => {
                     style={styles.button}
                     onPress={() => setUpdateMode((prevState) => !prevState)}
                 >
-                    <Text style={styles.buttonTitle}>Manage Babies</Text>
+                    <Text style={styles.buttonTitle}>{t('BabyScreen.manageBabyBtn')}</Text>
                 </TouchableOpacity>
                 {route.params?.firstLogin && (
                     <TouchableOpacity style={styles.button} onPress={() => auth.signOut()}>
-                        <Text style={styles.buttonTitle}>Logout</Text>
+                        <Text style={styles.buttonTitle}>{t('BabyScreen.logoutBtn')}</Text>
                     </TouchableOpacity>
                 )}
 
@@ -102,9 +104,9 @@ const BabyScreen = () => {
         ) : (
             <View style={styles.container}>
                 <View style={styles.noBabyFound}>
-                    <Text style={styles.noBabyFoundText}>Please add baby to continue</Text>
+                    <Text style={styles.noBabyFoundText}>{t('BabyScreen.addBabyTitle')}</Text>
                     <TouchableOpacity style={styles.button} onPress={() => auth.signOut()}>
-                        <Text style={styles.buttonTitle}>Logout</Text>
+                        <Text style={styles.buttonTitle}>{t('BabyScreen.logoutBtn')}</Text>
                     </TouchableOpacity>
                 </View>
                 <ActionButton

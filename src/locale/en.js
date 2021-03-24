@@ -1,0 +1,67 @@
+export default {
+    foo: 'Foo',
+    bar: 'Bar {{someValue}}',
+    welcome: 'Welcome!!!!!',
+    AppScreen: {
+        loginTitle: 'Login',
+        registrationTitle: 'Registration',
+        chooseBabyTitle: 'Which Baby to Record',
+        homeBabyTitle: 'Baby',
+    },
+    ProfileScreen: {
+        namePlaceholder: 'Name',
+        welcomeTitle: 'Welcome',
+        updateProfileBtn: 'Update Profile',
+        logoutBtn: 'Logout',
+    },
+    LoginScreen: {
+        emailPlaceholder: 'Email',
+        passwordPlaceholder: 'Password',
+        loginBtn: 'Login',
+        registerTitle: "Don't have an account?",
+        registerBtn: 'Register',
+    },
+    RegistrationScreen: {
+        emailPlaceholder: 'Email',
+        passwordPlaceholder: 'Password',
+        confirmPasswordPlaceholder: 'Confirm Password',
+        createAccountBtn: 'Create account',
+        loginTitle: 'Already got an account?',
+        loginBtn: 'Log In',
+    },
+    BabyScreen: {
+        manageBabyBtn: 'Manage Babies',
+        logoutBtn: 'Logout',
+        addBabyTitle: 'Please add baby to continue',
+    },
+    BabyDetailScreen: {
+        namePlaceholder: 'Name',
+        saveBtn: 'Save',
+        importBtn: 'Import Baby',
+        updateBtn: 'Update',
+        deleteBtn: 'Delete',
+        unRegBtn: 'Unregister',
+        importDialogTitle: 'Import Baby',
+        babyIdPlaceholder: 'Baby ID',
+        importDialogSaveBtn: 'Import',
+    },
+    HomeScreen: {
+        diaryTab: 'Diary',
+        dashboardTab: 'Dashboard',
+        profileTab: 'Profile',
+    },
+    DiaryScreen: {
+        editDiaryTitle: 'Edit Diary',
+        addDiaryTitle: 'Add Diary',
+    },
+    DiaryDetailScreen: {
+        volumePlaceholder: 'Volume',
+        remarkPlaceholder: 'Remark',
+        saveBtn: 'Save',
+        updateBtn: 'Update',
+        deleteBtn: 'Delete',
+    },
+    DashboardScreen: {
+        averageMilkTitle: 'Average Milk Consumption',
+    },
+};

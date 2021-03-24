@@ -1,28 +1,18 @@
 import * as Localization from 'expo-localization';
 import i18n from 'i18next';
 import { initReactI18next } from 'react-i18next';
+import en from '../locale/en';
+import zh from '../locale/zh';
 
 const resources = {
     en: {
-        translation: {
-            foo: 'Foo',
-            bar: 'Bar {{someValue}}',
-            welcome: 'Welcome!!!!!',
-        },
+        translation: en,
     },
     'en-HK': {
-        translation: {
-            foo: 'Foo',
-            bar: 'Bar {{someValue}}',
-            welcome: 'Welcome!!!!!',
-        },
+        translation: en,
     },
     'zh-Hant-HK': {
-        translation: {
-            foo: 'Foo',
-            bar: 'Bar {{someValue}}',
-            welcome: '歡迎!!!!!',
-        },
+        translation: zh,
     },
 };
 

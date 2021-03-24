@@ -1,6 +1,7 @@
 /* eslint-disable no-alert */
 /* eslint-disable react-native/no-raw-text */
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import {
     Text,
     View,
@@ -14,6 +15,7 @@ import { useAuth } from '../Context/AuthContext';
 import DismissKeyboard from './DismissKeyboard';
 
 const RegistrationScreen = () => {
+    const { t } = useTranslation();
     const navigation = useNavigation();
     const { register } = useAuth();
 
@@ -44,7 +46,7 @@ const RegistrationScreen = () => {
                 <KeyboardAvoidingView style={styles.avoidingView} behavior="padding">
                     <TextInput
                         style={styles.input}
-                        placeholder="Email"
+                        placeholder={t('RegistrationScreen.emailPlaceholder')}
                         placeholderTextColor="#aaaaaa"
                         onChangeText={(text) => setEmail(text)}
                         value={email}
@@ -55,7 +57,7 @@ const RegistrationScreen = () => {
                         style={styles.input}
                         placeholderTextColor="#aaaaaa"
                         secureTextEntry
-                        placeholder="Password"
+                        placeholder={t('RegistrationScreen.passwordPlaceholder')}
                         onChangeText={(text) => setPassword(text)}
                         value={password}
                         underlineColorAndroid="transparent"
@@ -65,19 +67,21 @@ const RegistrationScreen = () => {
                         style={styles.input}
                         placeholderTextColor="#aaaaaa"
                         secureTextEntry
-                        placeholder="Confirm Password"
+                        placeholder={t('RegistrationScreen.confirmPasswordPlaceholder')}
                         onChangeText={(text) => setConfirmPassword(text)}
                         value={confirmPassword}
                         underlineColorAndroid="transparent"
                         autoCapitalize="none"
                     />
                     <TouchableOpacity style={styles.button} onPress={() => onRegisterPress()}>
-                        <Text style={styles.buttonTitle}>Create account</Text>
+                        <Text style={styles.buttonTitle}>
+                            {t('RegistrationScreen.createAccountBtn')}
+                        </Text>
                     </TouchableOpacity>
                     <Text style={styles.footerText}>
-                        Already got an account?{' '}
+                        {`${t('RegistrationScreen.loginTitle')} `}
                         <Text onPress={onFooterLinkPress} style={styles.footerLink}>
-                            Log in
+                            {t('RegistrationScreen.loginBtn')}
                         </Text>
                     </Text>
                 </KeyboardAvoidingView>

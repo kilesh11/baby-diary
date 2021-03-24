@@ -2,6 +2,7 @@
 /* eslint-disable react/no-unescaped-entities */
 /* eslint-disable react-native/no-raw-text */
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import {
     Text,
     View,
@@ -15,6 +16,7 @@ import { useAuth } from '../Context/AuthContext';
 import DismissKeyboard from './DismissKeyboard';
 
 const LoginScreen = () => {
+    const { t } = useTranslation();
     const navigation = useNavigation();
     const { logIn } = useAuth();
     const [email, setEmail] = useState('');
@@ -42,7 +44,7 @@ const LoginScreen = () => {
                 <KeyboardAvoidingView style={styles.avoidingView} behavior="padding">
                     <TextInput
                         style={styles.input}
-                        placeholder="Email"
+                        placeholder={t('LoginScreen.emailPlaceholder')}
                         placeholderTextColor="#aaaaaa"
                         onChangeText={(text) => setEmail(text)}
                         value={email}
@@ -53,19 +55,19 @@ const LoginScreen = () => {
                         style={styles.input}
                         placeholderTextColor="#aaaaaa"
                         secureTextEntry
-                        placeholder="Password"
+                        placeholder={t('LoginScreen.passwordPlaceholder')}
                         onChangeText={(text) => setPassword(text)}
                         value={password}
                         underlineColorAndroid="transparent"
                         autoCapitalize="none"
                     />
                     <TouchableOpacity style={styles.button} onPress={() => onLogin()}>
-                        <Text style={styles.buttonTitle}>Log In</Text>
+                        <Text style={styles.buttonTitle}>{t('LoginScreen.loginBtn')}</Text>
                     </TouchableOpacity>
                     <Text style={styles.footerText}>
-                        Don't have an account?{' '}
+                        {`${t('LoginScreen.registerTitle')} `}
                         <Text onPress={onFooterLinkPress} style={styles.footerLink}>
-                            Register
+                            {t('LoginScreen.registerBtn')}
                         </Text>
                     </Text>
                 </KeyboardAvoidingView>

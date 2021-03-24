@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { FontAwesome5 } from '@expo/vector-icons';
 import DiaryScreen from './DiaryScreen';
@@ -8,6 +9,7 @@ import ProfileScreen from './ProfileScreen';
 const Tab = createBottomTabNavigator();
 
 const HomeScreen = () => {
+    const { t } = useTranslation();
     return (
         <Tab.Navigator
             screenOptions={({ route }) => ({
@@ -42,9 +44,21 @@ const HomeScreen = () => {
                 inactiveTintColor: 'gray',
             }}
         >
-            <Tab.Screen name="Diary" component={DiaryScreen} />
-            <Tab.Screen name="Dashboard" component={DashboardScreen} />
-            <Tab.Screen name="Profile" component={ProfileScreen} />
+            <Tab.Screen
+                name="Diary"
+                component={DiaryScreen}
+                options={{ title: t('HomeScreen.diaryTab') }}
+            />
+            <Tab.Screen
+                name="Dashboard"
+                component={DashboardScreen}
+                options={{ title: t('HomeScreen.dashboardTab') }}
+            />
+            <Tab.Screen
+                name="Profile"
+                component={ProfileScreen}
+                options={{ title: t('HomeScreen.profileTab') }}
+            />
         </Tab.Navigator>
     );
 };

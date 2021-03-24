@@ -6,6 +6,7 @@
 import React, { useState, useCallback, useMemo, useEffect } from 'react';
 import firebase from 'firebase';
 import { Overlay } from 'react-native-elements';
+import { useTranslation } from 'react-i18next';
 import {
     Text,
     View,
@@ -28,6 +29,7 @@ import { useBaby } from '../Context/BabyContext';
 const options = { year: 'numeric', month: 'long', day: 'numeric' };
 
 const BabyDetailScreen = () => {
+    const { t } = useTranslation();
     const route = useRoute();
     const navigation = useNavigation();
     const {
@@ -194,7 +196,7 @@ const BabyDetailScreen = () => {
                     </Text>
                     <TextInput
                         style={styles.input}
-                        placeholder="Name"
+                        placeholder={t('BabyDetailScreen.namePlaceholder')}
                         placeholderTextColor="#aaaaaa"
                         onChangeText={(text) => setName(text)}
                         value={name}
@@ -216,16 +218,22 @@ const BabyDetailScreen = () => {
                     {editBaby === '' ? (
                         <>
                             <TouchableOpacity style={styles.button} onPress={onAddBaby}>
-                                <Text style={styles.buttonTitle}>Save</Text>
+                                <Text style={styles.buttonTitle}>
+                                    {t('BabyDetailScreen.saveBtn')}
+                                </Text>
                             </TouchableOpacity>
                             <TouchableOpacity style={styles.button} onPress={showDialog}>
-                                <Text style={styles.buttonTitle}>Import Baby</Text>
+                                <Text style={styles.buttonTitle}>
+                                    {t('BabyDetailScreen.importBtn')}
+                                </Text>
                             </TouchableOpacity>
                         </>
                     ) : (
                         <>
                             <TouchableOpacity style={styles.button} onPress={onModifyBaby}>
-                                <Text style={styles.buttonTitle}>Update</Text>
+                                <Text style={styles.buttonTitle}>
+                                    {t('BabyDetailScreen.updateBtn')}
+                                </Text>
                             </TouchableOpacity>
                             {selectedBaby !== editBaby ? (
                                 onEditBaby?.parents.length === 1 ? (
@@ -233,14 +241,18 @@ const BabyDetailScreen = () => {
                                         style={styles.buttonDelete}
                                         onPress={onDeleteBaby}
                                     >
-                                        <Text style={styles.buttonTitle}>Delete</Text>
+                                        <Text style={styles.buttonTitle}>
+                                            {t('BabyDetailScreen.deleteBtn')}
+                                        </Text>
                                     </TouchableOpacity>
                                 ) : (
                                     <TouchableOpacity
                                         style={styles.buttonDelete}
                                         onPress={onUnregisterBaby}
                                     >
-                                        <Text style={styles.buttonTitle}>Unregister</Text>
+                                        <Text style={styles.buttonTitle}>
+                                            {t('BabyDetailScreen.unRegBtn')}
+                                        </Text>
                                     </TouchableOpacity>
                                 )
                             ) : (
@@ -264,10 +276,12 @@ const BabyDetailScreen = () => {
                     onBackdropPress={() => setVisible((prevState) => !prevState)}
                 >
                     <View style={styles.overlayContainerStyle}>
-                        <Text style={styles.overlayTitleStyle}>Import</Text>
+                        <Text style={styles.overlayTitleStyle}>
+                            {t('BabyDetailScreen.importDialogTitle')}
+                        </Text>
                         <TextInput
                             style={styles.dialogInput}
-                            placeholder="Baby ID"
+                            placeholder={t('BabyDetailScreen.babyIdPlaceholder')}
                             placeholderTextColor="#aaaaaa"
                             onChangeText={setImportBabyId}
                             value={importBabyId}
@@ -275,7 +289,9 @@ const BabyDetailScreen = () => {
                             autoCapitalize="none"
                         />
                         <TouchableOpacity style={styles.button} onPress={onImportBaby}>
-                            <Text style={styles.buttonTitle}>Import</Text>
+                            <Text style={styles.buttonTitle}>
+                                {t('BabyDetailScreen.importDialogSaveBtn')}
+                            </Text>
                         </TouchableOpacity>
                     </View>
                 </Overlay>

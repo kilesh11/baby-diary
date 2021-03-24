@@ -1,12 +1,14 @@
 import React, { useMemo, useState, useCallback } from 'react';
 import { Text, View, StyleSheet, ScrollView } from 'react-native';
 import { FontAwesome5, MaterialCommunityIcons } from '@expo/vector-icons';
+import { useTranslation } from 'react-i18next';
 import moment from 'moment';
 import DateRangePicker from 'react-native-daterange-picker';
 import { useBaby } from '../Context/BabyContext';
 import { useDiary } from '../Context/DiaryContext';
 
 const DashboardScreen = () => {
+    const { t } = useTranslation();
     const { babies, selectedBaby } = useBaby();
     const { diaries } = useDiary();
 
@@ -79,7 +81,9 @@ const DashboardScreen = () => {
             <ScrollView style={styles.content}>
                 <View style={styles.averageMilkWrapper}>
                     <View style={styles.lhsWrapper}>
-                        <Text style={styles.averageMilkText}>Average Milk Consumption</Text>
+                        <Text style={styles.averageMilkText}>
+                            {t('DashboardScreen.averageMilkTitle')}
+                        </Text>
                         <Text style={styles.averageMilkVolume}>{averageMilkVolume.toString()}</Text>
                     </View>
                     <View style={styles.rhsWrapper}>

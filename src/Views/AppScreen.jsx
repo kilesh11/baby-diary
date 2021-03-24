@@ -3,6 +3,7 @@
 import React from 'react';
 import { StyleSheet, TouchableOpacity, Image } from 'react-native';
 import { createStackNavigator } from '@react-navigation/stack';
+import { useTranslation } from 'react-i18next';
 // import { FontAwesome5 } from '@expo/vector-icons';
 import { useAuth } from '../Context/AuthContext';
 import { useBaby } from '../Context/BabyContext';
@@ -17,6 +18,7 @@ import DiaryDetailScreen from './DiaryDetailScreen';
 const Stack = createStackNavigator();
 
 const AppScreen = () => {
+    const { t } = useTranslation();
     const { user, isLoading } = useAuth();
     const { selectedBaby, babies, babiesUrl } = useBaby();
 
@@ -66,7 +68,7 @@ const AppScreen = () => {
                             name="HomeBaby"
                             component={BabyScreen}
                             options={{
-                                headerTitle: 'Baby',
+                                headerTitle: t('AppScreen.homeBabyTitle'),
                                 headerTintColor: 'white',
                                 headerStyle: {
                                     backgroundColor: '#788eec',
@@ -111,7 +113,7 @@ const AppScreen = () => {
                             component={BabyScreen}
                             initialParams={{ firstLogin: true }}
                             options={{
-                                headerTitle: 'Which Baby to Record',
+                                headerTitle: t('AppScreen.chooseBabyTitle'),
                                 headerTintColor: 'white',
                                 headerStyle: {
                                     backgroundColor: '#788eec',
@@ -143,6 +145,7 @@ const AppScreen = () => {
                         component={LoginScreen}
                         options={{
                             headerTintColor: 'white',
+                            headerTitle: t('AppScreen.loginTitle'),
                             headerStyle: {
                                 backgroundColor: '#788eec',
                                 elevation: 0,
@@ -156,6 +159,7 @@ const AppScreen = () => {
                         options={{
                             headerLeft: () => null,
                             headerTintColor: 'white',
+                            headerTitle: t('AppScreen.registrationTitle'),
                             headerStyle: {
                                 backgroundColor: '#788eec',
                                 elevation: 0,

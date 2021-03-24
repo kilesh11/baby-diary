@@ -2,6 +2,7 @@
 /* eslint-disable react/no-unescaped-entities */
 /* eslint-disable react-native/no-raw-text */
 import React, { useState, useCallback, useMemo } from 'react';
+import * as Localization from 'expo-localization';
 import {
     View,
     StyleSheet,
@@ -17,6 +18,7 @@ import { useNavigation } from '@react-navigation/native';
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
 import DismissKeyboard from './DismissKeyboard';
 import { useDiary } from '../Context/DiaryContext';
+import { useTranslation } from 'react-i18next';
 
 const options = { year: 'numeric', month: 'long', day: 'numeric' };
 
@@ -42,6 +44,7 @@ const checkFoodType = (ctx) => {
 };
 
 const BabyDetailScreen = () => {
+    const { t } = useTranslation();
     const navigation = useNavigation();
     const { diaries, addDiary, removeDiary, updateDiary, selectedDiary } = useDiary();
 
@@ -192,7 +195,7 @@ const BabyDetailScreen = () => {
                         keyboardType="number-pad"
                         mode="flat"
                         style={styles.input}
-                        placeholder="Milk Volume"
+                        placeholder={t('DiaryDetailScreen.volumePlaceholder')}
                         placeholderTextColor="#aaaaaa"
                         onChangeText={setMilkVolume}
                         value={milkVolume.toString()}
@@ -238,7 +241,7 @@ const BabyDetailScreen = () => {
                     </View>
                     <TextInput
                         style={styles.input}
-                        placeholder="Remark"
+                        placeholder={t('DiaryDetailScreen.remarkPlaceholder')}
                         placeholderTextColor="#aaaaaa"
                         onChangeText={setRemark}
                         value={remark}
@@ -247,21 +250,26 @@ const BabyDetailScreen = () => {
                     />
                     {selectedDiary === '' ? (
                         <TouchableOpacity style={styles.button} onPress={onAddDiary}>
-                            <Text style={styles.buttonTitle}>Save</Text>
+                            <Text style={styles.buttonTitle}>{t('DiaryDetailScreen.saveBtn')}</Text>
                         </TouchableOpacity>
                     ) : (
                         <>
                             <TouchableOpacity style={styles.button} onPress={onModifyDiary}>
-                                <Text style={styles.buttonTitle}>Update</Text>
+                                <Text style={styles.buttonTitle}>
+                                    {t('DiaryDetailScreen.updateBtn')}
+                                </Text>
                             </TouchableOpacity>
                             <TouchableOpacity style={styles.buttonDelete} onPress={onDeleteDiary}>
-                                <Text style={styles.buttonTitle}>Delete</Text>
+                                <Text style={styles.buttonTitle}>
+                                    {t('DiaryDetailScreen.deleteBtn')}
+                                </Text>
                             </TouchableOpacity>
                         </>
                     )}
                     <DateTimePickerModal
                         isVisible={isDatePickerVisible}
                         mode="date"
+                        locale={Localization.locale}
                         onConfirm={(date) => {
                             setCreatedAtDate(new Date(date));
                             setDatePickerVisibility(false);
@@ -271,6 +279,7 @@ const BabyDetailScreen = () => {
                     <DateTimePickerModal
                         isVisible={isTimePickerVisible}
                         mode="time"
+                        locale={Localization.locale}
                         onConfirm={(date) => {
                             setCreatedAtTime(new Date(date));
                             setTimePickerVisibility(false);

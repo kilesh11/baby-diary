@@ -1,11 +1,10 @@
 {
     "expo": {
         "name": "Baby Diary",
-        "slug": "Baby Diary",
+        "slug": "Baby-Diary",
         "version": "1.0.0",
         "privacy": "unlisted",
         "orientation": "portrait",
-        "platform": ["ios"],
         "icon": "./assets/icon.png",
         "splash": {
             "image": "./assets/splash.png"
@@ -13,7 +12,7 @@
         "assetBundlePatterns": ["**/*"],
         "ios": {
             "supportsTablet": true,
-            "bundleIdentifer": "net.kyleslab.babydiary",
+            "bundleIdentifier": "net.kyleslab.babydiary",
             "buildNumber": "1.0.0"
         }
     }

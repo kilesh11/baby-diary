@@ -1,31 +1,19 @@
 {
     "expo": {
-        "name": "baby-diary",
-        "slug": "baby-diary",
+        "name": "Baby Diary",
+        "slug": "Baby-Diary",
         "version": "1.0.0",
         "privacy": "unlisted",
         "orientation": "portrait",
         "icon": "./assets/icon.png",
         "splash": {
-            "image": "./assets/splash.png",
-            "resizeMode": "contain",
-            "backgroundColor": "#ffffff"
-        },
-        "updates": {
-            "fallbackToCacheTimeout": 0
+            "image": "./assets/splash.png"
         },
         "assetBundlePatterns": ["**/*"],
         "ios": {
-            "supportsTablet": true
-        },
-        "android": {
-            "adaptiveIcon": {
-                "foregroundImage": "./assets/adaptive-icon.png",
-                "backgroundColor": "#FFFFFF"
-            }
-        },
-        "web": {
-            "favicon": "./assets/favicon.png"
+            "supportsTablet": true,
+            "bundleIdentifier": "net.kyleslab.babydiary",
+            "buildNumber": "1.0.0"
         }
     }
 }

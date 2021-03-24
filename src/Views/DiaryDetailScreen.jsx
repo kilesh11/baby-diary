@@ -2,6 +2,7 @@
 /* eslint-disable react/no-unescaped-entities */
 /* eslint-disable react-native/no-raw-text */
 import React, { useState, useCallback, useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 import * as Localization from 'expo-localization';
 import {
     View,
@@ -18,7 +19,6 @@ import { useNavigation } from '@react-navigation/native';
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
 import DismissKeyboard from './DismissKeyboard';
 import { useDiary } from '../Context/DiaryContext';
-import { useTranslation } from 'react-i18next';
 
 const options = { year: 'numeric', month: 'long', day: 'numeric' };
 

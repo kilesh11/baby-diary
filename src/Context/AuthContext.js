@@ -27,7 +27,7 @@ export const AuthProvider = ({ children }) => {
                     await db
                         .collection('Users')
                         .doc(newUser.uid)
-                        .set({ babies: [], email: newUser.email, name: newUser.displayName ?? '' });
+                        .set({ email: newUser.email, name: newUser.displayName ?? '' });
                 }
                 setFirebaseUser(newUser);
             } else {

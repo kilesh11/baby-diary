@@ -10,11 +10,12 @@ import { useDiary } from '../Context/DiaryContext';
 
 const getTime = (date) => {
     let ampm = 'AM';
-    let hour = `0${date.getHours()}`.slice(-2);
+    let hour = date.getHours();
     if (hour > 12) {
         hour -= 12;
         ampm = 'PM';
     }
+    hour = `0${hour}`.slice(-2);
     const minute = `0${date.getMinutes()}`.slice(-2);
     return `${hour}:${minute}${ampm}`;
 };

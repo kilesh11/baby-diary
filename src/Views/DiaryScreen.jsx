@@ -1,5 +1,6 @@
 import React, { useMemo, useCallback } from 'react';
 import { Text, View, TouchableOpacity, StyleSheet } from 'react-native';
+import moment from 'moment';
 import { FontAwesome5, Entypo, MaterialCommunityIcons } from '@expo/vector-icons';
 import { useTranslation } from 'react-i18next';
 import { Agenda } from 'react-native-calendars';
@@ -8,29 +9,10 @@ import ActionButton from '../Util/ActionButton/ActionButton';
 import { useBaby } from '../Context/BabyContext';
 import { useDiary } from '../Context/DiaryContext';
 
-const getTime = (date) => {
-    let ampm = 'AM';
-    let hour = date.getHours();
-    if (hour > 12) {
-        hour -= 12;
-        ampm = 'PM';
-    }
-    hour = `0${hour}`.slice(-2);
-    const minute = `0${date.getMinutes()}`.slice(-2);
-    return `${hour}:${minute}${ampm}`;
-};
-
-const getDate = (date) => {
-    const year = date.getFullYear();
-    const month = `0${date.getMonth() + 1}`.slice(-2);
-    const day = `0${date.getDate()}`.slice(-2);
-    return `${year}-${month}-${day}`;
-};
-
 const parseDiaries = (diaries) => {
     const parsedDiaries = {};
     diaries.forEach((diary) => {
-        const date = getDate(diary.createdAt.toDate());
+        const date = moment(diary.createdAt.toDate()).format('YYYY-MM-DD');
         const {
             createdAt,
             id,
@@ -93,7 +75,9 @@ const DiaryScreen = () => {
                 }}
             >
                 <View style={styles.agendaWrapper}>
-                    <Text style={styles.agendaText}>{getTime(item.createdAt)}</Text>
+                    <Text style={styles.agendaText}>
+                        {moment(item.createdAt).format('hh:mm A')}
+                    </Text>
                     <View style={styles.agendaItem}>
                         <View style={styles.milkWrapper}>
                             {item.breastMilk || item.infantMilk || item.food ? (

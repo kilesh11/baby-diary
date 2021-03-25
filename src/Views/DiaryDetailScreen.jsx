@@ -3,6 +3,7 @@
 /* eslint-disable react-native/no-raw-text */
 import React, { useState, useCallback, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
+import moment from 'moment';
 import * as Localization from 'expo-localization';
 import {
     View,
@@ -222,7 +223,7 @@ const BabyDetailScreen = () => {
                         underlineColorAndroid="transparent"
                         autoCapitalize="none"
                     >
-                        {`${createdAtTime?.toTimeString().substring(0, 5)}`}
+                        {`${moment(createdAtTime).format('hh:mm A')}`}
                     </Text>
                     <View style={styles.peePoopIconWrapper}>
                         <Entypo

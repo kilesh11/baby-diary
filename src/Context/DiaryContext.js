@@ -56,7 +56,7 @@ export const DiaryProvider = ({ children }) => {
                         ctx: {
                             infantMilk: diary.foodType === 0 ? parseInt(diary.milkVolume, 10) : 0,
                             breastMilk: diary.foodType === 1 ? parseInt(diary.milkVolume, 10) : 0,
-                            food: diary.foodType === 2 ? parseInt(diary.milkVolume, 10) : 0,
+                            food: diary.foodType === 2 ? diary.foodPortion : '',
                             pee: diary.isPee,
                             poop: diary.isPoop,
                             remark: diary.remark,
@@ -90,7 +90,7 @@ export const DiaryProvider = ({ children }) => {
                     ctx: {
                         infantMilk: diary.foodType === 0 ? parseInt(diary.milkVolume, 10) : 0,
                         breastMilk: diary.foodType === 1 ? parseInt(diary.milkVolume, 10) : 0,
-                        food: diary.foodType === 2 ? parseInt(diary.milkVolume, 10) : 0,
+                        food: diary.foodType === 2 ? diary.foodPortion : '',
                         pee: diary.isPee,
                         poop: diary.isPoop,
                         remark: diary.remark,

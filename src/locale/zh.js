@@ -55,6 +55,7 @@ export default {
     },
     DiaryDetailScreen: {
         volumePlaceholder: '容量',
+        foodPlaceholder: '食物',
         remarkPlaceholder: '備註',
         saveBtn: '確認',
         updateBtn: '更新',

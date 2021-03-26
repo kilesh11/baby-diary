@@ -25,13 +25,13 @@ const options = { year: 'numeric', month: 'long', day: 'numeric' };
 
 const getMilkVolume = (diary) => {
     if (diary) {
-        return diary.ctx.infantMilk || diary.ctx.breastMilk || diary.ctx.food;
+        return diary.ctx.infantMilk || diary.ctx.breastMilk;
     }
     return '';
 };
 
 const checkFoodType = (ctx) => {
-    const { infantMilk, breastMilk, food = 0 } = ctx;
+    const { infantMilk, breastMilk, food = '' } = ctx;
     if (infantMilk) {
         return 0;
     }
@@ -64,6 +64,7 @@ const BabyDetailScreen = () => {
     );
     const [foodType, setFoodType] = useState(editDiary ? checkFoodType(editDiary?.ctx) : 0);
     const [milkVolume, setMilkVolume] = useState(getMilkVolume(editDiary));
+    const [foodPortion, setFoodPortion] = useState(editDiary ? editDiary?.ctx.food : '');
     const [isPee, setIsPee] = useState(editDiary ? editDiary?.ctx.pee : false);
     const [isPoop, setIsPoop] = useState(editDiary ? editDiary?.ctx.poop : false);
     const [remark, setRemark] = useState(editDiary ? editDiary?.ctx.remark : '');
@@ -82,6 +83,7 @@ const BabyDetailScreen = () => {
                     createdAtTime.getSeconds(),
                 ),
                 milkVolume: milkVolume === '' ? 0 : milkVolume,
+                foodPortion,
                 foodType,
                 isPee,
                 isPoop,
@@ -96,6 +98,7 @@ const BabyDetailScreen = () => {
         createdAtDate,
         createdAtTime,
         milkVolume,
+        foodPortion,
         foodType,
         isPee,
         isPoop,
@@ -115,6 +118,7 @@ const BabyDetailScreen = () => {
                     createdAtTime.getSeconds(),
                 ),
                 milkVolume: milkVolume === '' ? 0 : milkVolume,
+                foodPortion,
                 foodType,
                 isPee,
                 isPoop,
@@ -129,6 +133,7 @@ const BabyDetailScreen = () => {
         createdAtDate,
         createdAtTime,
         milkVolume,
+        foodPortion,
         foodType,
         isPee,
         isPoop,
@@ -192,17 +197,30 @@ const BabyDetailScreen = () => {
                             selectedButtonStyle={styles.selectedButtonStyle}
                         />
                     </View>
-                    <TextInput
-                        keyboardType="number-pad"
-                        mode="flat"
-                        style={styles.input}
-                        placeholder={t('DiaryDetailScreen.volumePlaceholder')}
-                        placeholderTextColor="#aaaaaa"
-                        onChangeText={setMilkVolume}
-                        value={milkVolume.toString()}
-                        underlineColorAndroid="transparent"
-                        autoCapitalize="none"
-                    />
+                    {foodType !== 2 ? (
+                        <TextInput
+                            keyboardType="number-pad"
+                            mode="flat"
+                            style={styles.input}
+                            placeholder={t('DiaryDetailScreen.volumePlaceholder')}
+                            placeholderTextColor="#aaaaaa"
+                            onChangeText={setMilkVolume}
+                            value={milkVolume.toString()}
+                            underlineColorAndroid="transparent"
+                            autoCapitalize="none"
+                        />
+                    ) : (
+                        <TextInput
+                            mode="flat"
+                            style={styles.input}
+                            placeholder={t('DiaryDetailScreen.foodPlaceholder')}
+                            placeholderTextColor="#aaaaaa"
+                            onChangeText={setFoodPortion}
+                            value={foodPortion.toString()}
+                            underlineColorAndroid="transparent"
+                            autoCapitalize="none"
+                        />
+                    )}
                     <Text
                         style={styles.dateText}
                         onPress={() => {

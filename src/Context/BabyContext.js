@@ -1,6 +1,5 @@
 import firebase from 'firebase';
 import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
-import { Alert } from 'react-native';
 import { db } from '../Util/firebase';
 import { useAuth } from './AuthContext';
 
@@ -57,7 +56,7 @@ export const BabyProvider = ({ children }) => {
                             imageUrl = await babyImgRef.getDownloadURL();
                         } catch (err) {
                             if (err.code !== 'storage/object-not-found') {
-                                Alert.alert('image got problem');
+                                alert('image got problem');
                             }
                         }
                         return { id: baby.id, imageUrl };

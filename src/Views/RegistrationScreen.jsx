@@ -9,7 +9,6 @@ import {
     TouchableOpacity,
     TextInput,
     KeyboardAvoidingView,
-    Alert,
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { useAuth } from '../Context/AuthContext';
@@ -18,7 +17,7 @@ import DismissKeyboard from './DismissKeyboard';
 const RegistrationScreen = () => {
     const { t } = useTranslation();
     const navigation = useNavigation();
-    const { register } = useAuth();
+    const { signUp } = useAuth();
 
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
@@ -34,13 +33,17 @@ const RegistrationScreen = () => {
             return null;
         }
         if (password !== confirmPassword) {
-            alert("Passwords don't match.");
+            alert("Password don't match.");
+            return null;
+        }
+        if (password.length < 6) {
+            alert('Password length must > 6');
             return null;
         }
         try {
-            await register(email, password);
+            await signUp(email, password);
         } catch (err) {
-            Alert.alert(err);
+            alert(err);
         }
         return null;
     };
@@ -78,7 +81,7 @@ const RegistrationScreen = () => {
                         underlineColorAndroid="transparent"
                         autoCapitalize="none"
                     />
-                    <TouchableOpacity style={styles.button} onPress={() => onRegisterPress()}>
+                    <TouchableOpacity style={styles.button} onPress={onRegisterPress}>
                         <Text style={styles.buttonTitle}>
                             {t('RegistrationScreen.createAccountBtn')}
                         </Text>

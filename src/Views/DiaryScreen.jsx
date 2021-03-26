@@ -167,7 +167,7 @@ const DiaryScreen = () => {
                 // // Maximum date that can be selected, dates after maxDate will be grayed out. Default = undefined
                 // maxDate={'2012-05-30'}
                 // // Max amount of months allowed to scroll to the past. Default = 50
-                pastScrollRange={3}
+                pastScrollRange={moment(new Date()).diff(moment(babyBirthDate), 'month')}
                 // // Max amount of months allowed to scroll to the future. Default = 50
                 futureScrollRange={10}
                 // // Specify how each item should be rendered in agenda

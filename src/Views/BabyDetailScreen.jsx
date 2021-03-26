@@ -17,7 +17,6 @@ import {
     Keyboard,
     Platform,
     Image,
-    Alert,
     Dimensions,
 } from 'react-native';
 import { useNavigation, useRoute } from '@react-navigation/native';
@@ -87,7 +86,7 @@ const BabyDetailScreen = () => {
                     [editBaby]: downloadUrl,
                 }));
             } catch (err) {
-                Alert.alert(err);
+                alert(err);
             }
         },
         [editBaby, setBabiesUrl],

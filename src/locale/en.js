@@ -56,6 +56,7 @@ export default {
     },
     DiaryDetailScreen: {
         volumePlaceholder: 'Volume',
+        foodPlaceholder: 'Food',
         remarkPlaceholder: 'Remark',
         saveBtn: 'Save',
         updateBtn: 'Update',

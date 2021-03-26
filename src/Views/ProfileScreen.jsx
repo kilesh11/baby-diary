@@ -1,6 +1,6 @@
 import React, { useCallback, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Text, View, TouchableOpacity, StyleSheet, TextInput, Alert } from 'react-native';
+import { Text, View, TouchableOpacity, StyleSheet, TextInput } from 'react-native';
 import { useAuth } from '../Context/AuthContext';
 import { auth } from '../Util/firebase';
 import DismissKeyboard from './DismissKeyboard';
@@ -14,7 +14,7 @@ const ProfileScreen = () => {
         try {
             await updateUser(userName);
         } catch (err) {
-            Alert.alert(err);
+            alert(err);
         }
     }, [updateUser, userName]);
 

@@ -5,7 +5,7 @@ import wrapper from '../Util/common';
 const AuthContext = createContext({
     user: null,
     setUser: () => null,
-    register: async () => {},
+    signUp: async () => {},
     logIn: async () => {},
     updateUser: async () => {},
 });
@@ -49,13 +49,18 @@ export const AuthProvider = ({ children }) => {
         })();
     }, [firebaseUser]);
 
-    const register = useCallback(async (email, password) => {
+    // eslint-disable-next-line consistent-return
+    const signUp = useCallback(async (email, password) => {
         const { error } = await wrapper(auth.createUserWithEmailAndPassword(email, password));
         if (error) {
             return Promise.reject(error);
         }
+        // const checkUser = await db.collection('Users').where('email', '==', email).get();
+        // if (checkUser.docs.length === 0) {
 
-        return true;
+        // } else {
+        //     return Promise.reject(new Error('user exist!'));
+        // }
     }, []);
 
     const logIn = useCallback(async ({ email, password }) => {
@@ -92,7 +97,7 @@ export const AuthProvider = ({ children }) => {
             value={{
                 setUser,
                 updateUser,
-                register,
+                signUp,
                 logIn,
                 user,
                 isLoading,

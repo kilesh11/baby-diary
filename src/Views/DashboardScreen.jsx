@@ -113,7 +113,7 @@ const styles = StyleSheet.create({
     },
     dateRangePickerText: { fontSize: 20, color: '#788eec' },
     dateRangePickerInvisibleText: { fontSize: 20, opacity: 0 },
-    dateRangePickerContainer: { marginBottom: '30%' },
+    dateRangePickerContainer: { marginBottom: '20%' },
     dateRangePickerSelected: { backgroundColor: '#788eec' },
     averageMilkWrapper: {
         flexDirection: 'row',

@@ -32,6 +32,7 @@ export const AuthProvider = ({ children }) => {
                 setFirebaseUser(newUser);
             } else {
                 setFirebaseUser(null);
+                setIsLoading(false);
             }
         });
         return () => unsubscribe();
@@ -42,10 +43,10 @@ export const AuthProvider = ({ children }) => {
             if (firebaseUser) {
                 const firestoreUser = await db.collection('Users').doc(firebaseUser.uid).get();
                 setUser({ ...firestoreUser.data(), uid: firebaseUser.uid });
+                setIsLoading(false);
             } else {
                 setUser(null);
             }
-            setIsLoading(false);
         })();
     }, [firebaseUser]);
 

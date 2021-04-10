@@ -82,17 +82,11 @@ const DiaryScreen = () => {
                         <View style={styles.milkWrapper}>
                             {item.breastMilk || item.infantMilk || item.food ? (
                                 <>
-                                    {item.breastMilk || item.infantMilk ? (
+                                    {Boolean(item.breastMilk || item.infantMilk) && (
                                         <MaterialCommunityIcons
                                             name="baby-bottle-outline"
                                             size={30}
                                             color={item.infantMilk ? '#788eec' : '#FFC0CB'}
-                                        />
-                                    ) : (
-                                        <MaterialCommunityIcons
-                                            name="food-drumstick"
-                                            size={30}
-                                            color="#cd7b34"
                                         />
                                     )}
                                     <Text style={styles.milkVolume}>

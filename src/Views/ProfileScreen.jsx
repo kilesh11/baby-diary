@@ -38,6 +38,7 @@ const ProfileScreen = () => {
                 <TouchableOpacity style={styles.button} onPress={() => auth.signOut()}>
                     <Text style={styles.buttonTitle}>{t('ProfileScreen.logoutBtn')}</Text>
                 </TouchableOpacity>
+                <Text style={styles.version}>Version: 1.3.2</Text>
             </View>
         </DismissKeyboard>
     );
@@ -78,6 +79,11 @@ const styles = StyleSheet.create({
         color: 'white',
         fontSize: 16,
         fontWeight: 'bold',
+    },
+    version: {
+        alignSelf: 'center',
+        marginVertical: 20,
+        fontSize: 15,
     },
 });
 

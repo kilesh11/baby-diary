@@ -51,12 +51,14 @@ export const BabyProvider = ({ children }) => {
                 const results = await Promise.all(
                     babies.map(async (baby) => {
                         let imageUrl = false;
-                        try {
-                            const babyImgRef = firebase.storage().ref(`baby/${baby.id}`);
-                            imageUrl = await babyImgRef.getDownloadURL();
-                        } catch (err) {
-                            if (err.code !== 'storage/object-not-found') {
-                                alert('image got problem');
+                        if (baby.image) {
+                            try {
+                                const babyImgRef = firebase.storage().ref(`baby/${baby.id}`);
+                                imageUrl = await babyImgRef.getDownloadURL();
+                            } catch (err) {
+                                if (err.code !== 'storage/object-not-found') {
+                                    alert('image got problem');
+                                }
                             }
                         }
                         return { id: baby.id, imageUrl };
@@ -81,6 +83,7 @@ export const BabyProvider = ({ children }) => {
                         updatedAt: firebase.firestore.Timestamp.fromDate(new Date()),
                         name: baby.name,
                         parents: [user.uid],
+                        image: false,
                     });
                 return true;
             } catch (err) {
@@ -108,6 +111,7 @@ export const BabyProvider = ({ children }) => {
                     birthDate: firebase.firestore.Timestamp.fromDate(baby.birthDate),
                     updatedAt: firebase.firestore.Timestamp.fromDate(new Date()),
                     name: baby.name,
+                    image: baby.image,
                 });
             return true;
         } catch (err) {

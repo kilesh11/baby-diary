@@ -81,6 +81,7 @@ const BabyDetailScreen = () => {
                 const ref = firebase.storage().ref().child(`baby/${editBaby}`);
                 const snapshot = await ref.put(blob, metadata);
                 const downloadUrl = await snapshot.ref.getDownloadURL();
+                await updateBaby(editBaby, { birthDate, name, image: true });
                 setBabiesUrl((prevState) => ({
                     ...prevState,
                     [editBaby]: downloadUrl,
@@ -89,7 +90,7 @@ const BabyDetailScreen = () => {
                 alert(err);
             }
         },
-        [editBaby, setBabiesUrl],
+        [editBaby, updateBaby, setBabiesUrl, birthDate, name],
     );
 
     const [name, setName] = useState(onEditBaby ? onEditBaby.name ?? '' : '');
@@ -99,10 +100,11 @@ const BabyDetailScreen = () => {
     const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
     const [visible, setVisible] = useState(false);
     const [importBabyId, setImportBabyId] = useState('');
+    const image = onEditBaby ? onEditBaby.name ?? false : false;
 
     const onAddBaby = useCallback(async () => {
         try {
-            await addBaby({ birthDate, name });
+            await addBaby({ birthDate, name, image });
             if (route.params.firstLogin) {
                 navigation.navigate('ChooseBaby');
             } else {
@@ -111,11 +113,11 @@ const BabyDetailScreen = () => {
         } catch (err) {
             alert(err);
         }
-    }, [addBaby, birthDate, name, navigation, route.params]);
+    }, [addBaby, birthDate, name, image, navigation, route.params]);
 
     const onModifyBaby = useCallback(async () => {
         try {
-            await updateBaby(editBaby, { birthDate, name });
+            await updateBaby(editBaby, { birthDate, name, image });
             if (route.params.firstLogin) {
                 navigation.navigate('ChooseBaby');
             } else {
@@ -124,7 +126,7 @@ const BabyDetailScreen = () => {
         } catch (err) {
             alert(err);
         }
-    }, [updateBaby, birthDate, name, navigation, route.params, editBaby]);
+    }, [updateBaby, birthDate, name, image, navigation, route.params, editBaby]);
 
     const onDeleteBaby = useCallback(async () => {
         try {
@@ -173,6 +175,8 @@ const BabyDetailScreen = () => {
     const hideDialog = useCallback(() => {
         setVisible(false);
     }, []);
+
+    const editBabyParent = onEditBaby ? onEditBaby.parents.length ?? 0 : 0;
 
     return (
         <DismissKeyboard>
@@ -235,7 +239,7 @@ const BabyDetailScreen = () => {
                                 </Text>
                             </TouchableOpacity>
                             {selectedBaby !== editBaby ? (
-                                onEditBaby?.parents.length === 1 ? (
+                                editBabyParent === 1 ? (
                                     <TouchableOpacity
                                         style={styles.buttonDelete}
                                         onPress={onDeleteBaby}

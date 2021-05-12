@@ -38,7 +38,7 @@ const ProfileScreen = () => {
                 <TouchableOpacity style={styles.button} onPress={() => auth.signOut()}>
                     <Text style={styles.buttonTitle}>{t('ProfileScreen.logoutBtn')}</Text>
                 </TouchableOpacity>
-                <Text style={styles.version}>Version: 1.3.2</Text>
+                <Text style={styles.version}>Version: 1.4.0</Text>
             </View>
         </DismissKeyboard>
     );

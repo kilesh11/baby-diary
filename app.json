@@ -2,7 +2,7 @@
     "expo": {
         "name": "Baby Diary",
         "slug": "Baby-Diary",
-        "version": "1.0.0",
+        "version": "1.1.0",
         "privacy": "unlisted",
         "orientation": "portrait",
         "icon": "./assets/icon.png",
@@ -13,7 +13,7 @@
         "ios": {
             "supportsTablet": true,
             "bundleIdentifier": "net.kyleslab.babydiary",
-            "buildNumber": "1.0.0"
+            "buildNumber": "1.1.0"
         }
     }
 }

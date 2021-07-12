@@ -3,6 +3,7 @@
 /* eslint-disable react-native/no-raw-text */
 import React, { useState, useCallback, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useColorScheme } from 'react-native-appearance';
 import moment from 'moment';
 import * as Localization from 'expo-localization';
 import {
@@ -45,6 +46,7 @@ const checkFoodType = (ctx) => {
 };
 
 const BabyDetailScreen = () => {
+    const colorScheme = useColorScheme();
     const { t } = useTranslation();
     const navigation = useNavigation();
     const { diaries, addDiary, removeDiary, updateDiary, selectedDiary } = useDiary();
@@ -69,7 +71,6 @@ const BabyDetailScreen = () => {
     const [isPoop, setIsPoop] = useState(editDiary ? editDiary?.ctx.poop : false);
     const [remark, setRemark] = useState(editDiary ? editDiary?.ctx.remark : '');
     const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
-    const [isTimePickerVisible, setTimePickerVisibility] = useState(false);
 
     const onAddDiary = useCallback(async () => {
         try {
@@ -236,7 +237,7 @@ const BabyDetailScreen = () => {
                         style={styles.dateText}
                         onPress={() => {
                             Keyboard.dismiss();
-                            setTimePickerVisibility(true);
+                            setDatePickerVisibility(true);
                         }}
                         underlineColorAndroid="transparent"
                         autoCapitalize="none"
@@ -287,23 +288,16 @@ const BabyDetailScreen = () => {
                     )}
                     <DateTimePickerModal
                         isVisible={isDatePickerVisible}
-                        mode="date"
+                        mode="datetime"
+                        isDarkModeEnabled={colorScheme === 'dark'}
                         locale={Localization.locale}
                         onConfirm={(date) => {
                             setCreatedAtDate(new Date(date));
+                            setCreatedAtTime(new Date(date));
                             setDatePickerVisibility(false);
                         }}
                         onCancel={() => setDatePickerVisibility(false)}
-                    />
-                    <DateTimePickerModal
-                        isVisible={isTimePickerVisible}
-                        mode="time"
-                        locale={Localization.locale}
-                        onConfirm={(date) => {
-                            setCreatedAtTime(new Date(date));
-                            setTimePickerVisibility(false);
-                        }}
-                        onCancel={() => setTimePickerVisibility(false)}
+                        display="inline"
                     />
                 </KeyboardAvoidingView>
             </View>

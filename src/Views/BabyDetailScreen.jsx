@@ -5,6 +5,7 @@
 /* eslint-disable global-require */
 import React, { useState, useCallback, useMemo, useEffect } from 'react';
 import firebase from 'firebase';
+import { useColorScheme } from 'react-native-appearance';
 import { Overlay } from 'react-native-elements';
 import { useTranslation } from 'react-i18next';
 import {
@@ -28,6 +29,7 @@ import { useBaby } from '../Context/BabyContext';
 const options = { year: 'numeric', month: 'long', day: 'numeric' };
 
 const BabyDetailScreen = () => {
+    const colorScheme = useColorScheme();
     const { t } = useTranslation();
     const route = useRoute();
     const navigation = useNavigation();
@@ -265,12 +267,14 @@ const BabyDetailScreen = () => {
                     )}
                     <DateTimePickerModal
                         isVisible={isDatePickerVisible}
+                        isDarkModeEnabled={colorScheme === 'dark'}
                         mode="date"
                         onConfirm={(date) => {
                             setBirthDate(new Date(date));
                             setDatePickerVisibility(false);
                         }}
                         onCancel={() => setDatePickerVisibility(false)}
+                        display="inline"
                     />
                 </KeyboardAvoidingView>
                 <Overlay
